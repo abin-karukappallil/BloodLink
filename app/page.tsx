@@ -1,101 +1,182 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Droplet, Users, Calendar, Activity, ChevronRight } from "lucide-react"
+
+export default function BloodDonorSystem() {
+  const [activeTab, setActiveTab] = useState("dashboard")
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
+      <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
+        <nav className="container mx-auto flex justify-between items-center py-4 px-6">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 text-transparent bg-clip-text"
+          >
+            BloodLink
+          </motion.h1>
+          <ul className="flex space-x-6">
+            {["Home", "Donors", "Donations", "Reports"].map((item) => (
+              <motion.li key={item} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <a href="#" className="text-gray-100 hover:text-red-400 transition-colors duration-200">
+                  {item}
+                </a>
+              </motion.li>
+            ))}
+          </ul>
+        </nav>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+      <main className="container mx-auto mt-20 p-6">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-16 text-center"
+        >
+          <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
+            Welcome to BloodLink
+          </h2>
+          <p className="text-xl mb-8 text-gray-100">Connecting donors with those in need</p>
+          <Button size="lg" className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-none shadow-lg hover:shadow-xl transition-all duration-200">
+            Become a Donor
+          </Button>
+        </motion.section>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4 mt-32 gap-4 bg-transparent">
+            {["dashboard", "donors", "donations", "inventory"].map((tab) => (
+              <TabsTrigger
+                key={tab}
+                value={tab}
+                className="py-3 text-base capitalize bg-gray-800/20 backdrop-blur-sm shadow-md rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-orange-500 data-[state=active]:text-white"
+              >
+                {tab}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <TabsContent value="dashboard" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    { title: "Total Donors", icon: Users, value: "1,234" },
+                    { title: "Recent Donations", icon: Droplet, value: "56" },
+                    { title: "Scheduled Donations", icon: Calendar, value: "23" },
+                    { title: "Blood Types Needed", icon: Activity, value: "A+, O-" },
+                  ].map((item, index) => (
+                    <motion.div
+                      key={item.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
+                      <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg hover:shadow-red-500/5 transition-all duration-300">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                          <CardTitle className="text-lg font-medium text-gray-100">{item.title}</CardTitle>
+                          <item.icon className="h-6 w-6 text-red-400" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-3xl font-bold text-white">
+                            {item.value}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="donors">
+                <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-2xl text-white">Donor Management</CardTitle>
+                    <CardDescription className="text-gray-100">Add or search for donors in the system.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="search" className="text-gray-100">Search Donors</Label>
+                      <Input
+                        id="search"
+                        placeholder="Enter name or ID"
+                        className="bg-gray-700/30 border-gray-600/50 text-white placeholder-gray-400"
+                      />
+                    </div>
+                    <Button className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-none">
+                      Add New Donor
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="donations">
+                <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-2xl text-white">Recent Donations</CardTitle>
+                    <CardDescription className="text-gray-100">View and manage recent blood donations.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {["John Doe", "Jane Smith", "Alex Johnson"].map((name, index) => (
+                        <motion.div
+                          key={name}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.1 }}
+                          className="flex items-center justify-between p-4 bg-gray-700/20 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+                        >
+                          <span className="text-white">{name}</span>
+                          <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
+                            <ChevronRight className="h-5 w-5" />
+                          </Button>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="inventory">
+                <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-2xl text-white">Blood Inventory</CardTitle>
+                    <CardDescription className="text-gray-100">Current blood type availability.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      {["A+", "B+", "O+", "AB+", "A-", "B-", "O-", "AB-"].map((type, index) => (
+                        <motion.div
+                          key={type}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3, delay: index * 0.05 }}
+                          className="text-center p-6 bg-gray-700/20 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                        >
+                          <div className="text-3xl font-bold text-white">{type}</div>
+                          <div className="text-sm text-gray-100 mt-2">Available</div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </motion.div>
+          </AnimatePresence>
+        </Tabs>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
     </div>
-  );
+  )
 }
