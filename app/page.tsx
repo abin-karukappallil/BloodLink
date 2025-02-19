@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Droplet, Users, Calendar, Activity, ChevronRight } from "lucide-react"
+import Link from 'next/link';
 
 export default function BloodDonorSystem() {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -15,15 +16,16 @@ export default function BloodDonorSystem() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
-        <nav className="container mx-auto flex justify-between items-center py-4 px-6">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 text-transparent bg-clip-text"
-          >
-            BloodLink
-          </motion.h1>
+      <nav className="container mx-auto flex justify-between items-center py-4 px-6">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 text-transparent bg-clip-text"
+        >
+          BloodLink
+        </motion.h1>
+        <div className="flex items-center space-x-6">
           <ul className="flex space-x-6">
             {["Home", "Donors", "Donations", "Reports"].map((item) => (
               <motion.li key={item} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -33,7 +35,16 @@ export default function BloodDonorSystem() {
               </motion.li>
             ))}
           </ul>
-        </nav>
+          <Link href="/login">
+            <Button
+              variant="outline"
+              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+            >
+              Login
+            </Button>
+          </Link>
+        </div>
+      </nav>
       </header>
 
       <main className="container mx-auto mt-20 p-6">
