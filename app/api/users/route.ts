@@ -1,11 +1,15 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-
 import { NextResponse } from "next/server";
+import type { D1Database } from "@cloudflare/workers-types";
 
-export async function GET(req: Request, ctx: any) {
+declare global {
+    var DB: D1Database | undefined; 
+}
+
+export async function GET() {
     try {
-        const db = ctx.env.DB;
-        const stmt = db.prepare("SELECT * FROM donors;");
+        if (!DB) throw new Error("Database connection is missing.");
+
+        const stmt = DB.prepare("SELECT * FROM donors;");
         const { results } = await stmt.all();
 
         return NextResponse.json(results, { status: 200 });
@@ -15,12 +19,12 @@ export async function GET(req: Request, ctx: any) {
     }
 }
 
-export async function POST(req: Request, ctx: any) {
+export async function POST(req: Request) {
     try {
         const { name, phoneNumber, address, email } = await req.json();
-        const db = ctx.env.DB; 
+        if (!DB) throw new Error("Database connection is missing.");
 
-        await db.prepare(
+        await DB.prepare(
             "INSERT INTO donors (name, phoneNumber, address, email) VALUES (?, ?, ?, ?);"
         ).bind(name, phoneNumber, address, email).run();
 
