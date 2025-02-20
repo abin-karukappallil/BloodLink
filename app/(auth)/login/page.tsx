@@ -1,7 +1,7 @@
 // app/(auth)/login/page.tsx
 "use client"
 
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import LoginForm from "@/components/auth/login-form"
 
 export default function LoginPage() {

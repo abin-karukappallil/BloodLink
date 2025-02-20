@@ -1,5 +1,0 @@
-name = "bloodlink"
-[[ d1_databases ]]
-binding = "DB"
-database_name = "bloodlink"
-database_id = "2937c1ad-bf48-41f1-8559-e1fa4b60a04d"

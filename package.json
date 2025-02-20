@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
@@ -22,6 +24,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250214.0",
     "@eslint/eslintrc": "^3",
+    "@types/bcrypt": "^5.0.2",
     "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^20.17.19",
     "@types/react": "^19",

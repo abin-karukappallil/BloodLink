@@ -1,32 +1,25 @@
 import { NextResponse } from "next/server";
-import type { D1Database } from "@cloudflare/workers-types";
-
-declare global {
-    var DB: D1Database | undefined; 
-}
+import { db } from "@/lib/db"; 
+import bcrypt from "bcrypt";
 
 export async function GET() {
     try {
-        if (!DB) throw new Error("Database connection is missing.");
-
-        const stmt = DB.prepare("SELECT * FROM donors;");
-        const { results } = await stmt.all();
-
-        return NextResponse.json(results, { status: 200 });
+        const data = await db`SELECT * FROM donors;`;
+        return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error("Error fetching users:", error);
-        return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
+        return NextResponse.json({ error: error}, { status: 500 });
     }
 }
 
 export async function POST(req: Request) {
     try {
-        const { name, phoneNumber, address, email } = await req.json();
-        if (!DB) throw new Error("Database connection is missing.");
-
-        await DB.prepare(
-            "INSERT INTO donors (name, phoneNumber, address, email) VALUES (?, ?, ?, ?);"
-        ).bind(name, phoneNumber, address, email).run();
+        const { name, phoneNumber, address, email, password } = await req.json();
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await db`
+            INSERT INTO donors (name, phoneNumber, address, email, password)
+            VALUES (${name}, ${phoneNumber}, ${address}, ${email}, ${hashedPassword});
+        `;
 
         return NextResponse.json({ message: "User added successfully" }, { status: 201 });
     } catch (error) {

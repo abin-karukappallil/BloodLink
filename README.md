@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BloodLink - Environment Setup Guide
 
-## Getting Started
+## Step 1: Creating a NeonDB Database
+1. Visit [NeonDB Console](https://console.neon.tech/app/welcome) and log in.
+2. Click **Create a Database** and provide the following details:
+   - **Name:** (Choose any suitable name)
+   - **PostgreSQL Version:** `17`
+   - **Region:** `AWS Singapore`
+3. Click **Create** to initialize your database.
 
-First, run the development server:
+## Step 2: Obtaining Connection String
+1. After creating the database, click the **Connect** button.
+2. Select **Connection String** and choose **Next.js** as the platform.
+3. Copy the generated `.env` snippet.
 
-```bash
+## Step 3: Configuring the Project
+1. Navigate to your project root directory.
+2. Create a new **.env.local** file if it doesn’t exist.
+3. Open `.env.local` and paste the copied connection string.
+4. Save the file.
+
+## Step 4: Running the Project
+After setting up the database, start your Next.js project:
+```sh
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
