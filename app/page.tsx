@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Droplet, Users, Calendar, Activity, ChevronRight } from "lucide-react"
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button"
 import Link from 'next/link';
 
 export default function BloodDonorSystem() {
@@ -26,15 +27,6 @@ export default function BloodDonorSystem() {
           BloodLink
         </motion.h1>
         <div className="flex items-center space-x-6">
-          <ul className="flex space-x-6">
-            {["Home", "Donors", "Donations", "Reports"].map((item) => (
-              <motion.li key={item} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <a href="#" className="text-gray-100 hover:text-red-400 transition-colors duration-200">
-                  {item}
-                </a>
-              </motion.li>
-            ))}
-          </ul>
           <Link href="/login">
             <Button
               variant="outline"
@@ -58,18 +50,16 @@ export default function BloodDonorSystem() {
             Welcome to BloodLink
           </h2>
           <p className="text-xl mb-8 text-gray-100">Connecting donors with those in need</p>
-          <Button size="lg" className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-none shadow-lg hover:shadow-xl transition-all duration-200">
-            Become a Donor
-          </Button>
+         <InteractiveHoverButton>Become a donor</InteractiveHoverButton>
         </motion.section>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 md:w-full w-full">
           <TabsList className="grid w-full grid-cols-4 mt-32 gap-4 bg-transparent">
             {["dashboard", "donors", "donations", "inventory"].map((tab) => (
               <TabsTrigger
                 key={tab}
                 value={tab}
-                className="py-3 text-base capitalize bg-gray-800/20 backdrop-blur-sm shadow-md rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-orange-500 data-[state=active]:text-white"
+                className="py-3 text-sm md:text-base capitalize bg-gray-800/20 backdrop-blur-sm shadow-md rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-orange-500 data-[state=active]:text-white"
               >
                 {tab}
               </TabsTrigger>
