@@ -17,20 +17,14 @@ async function verifyCaptcha(captchaResponse: string) {
       return false;
     }
 
-    const response = await fetch(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaResponse}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.error("Failed to verify captcha with Google");
-      return false;
-    }
+    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: secretKey,
+        response: captchaResponse,
+      }),
+    });
 
     const data = await response.json();
     console.log("Captcha verification response:", data);
@@ -41,7 +35,6 @@ async function verifyCaptcha(captchaResponse: string) {
     return false;
   }
 }
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();

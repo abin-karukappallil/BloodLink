@@ -17,6 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+       <script src="https://www.google.com/recaptcha/api.js" async defer></script>
       <body className={`${inter.className} bg-background text-foreground antialiased`}>
         <MouseMoveEffect />
         {children}
