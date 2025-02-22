@@ -8,7 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 
-
+declare global {
+  interface Window {
+    grecaptcha: {
+      render: (id: string, options: { sitekey: string; callback: () => void; theme: string }) => void;
+      getResponse: () => string;
+      ready: (cb: () => void) => void;
+    };
+  }
+}
 export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [captchaVerified, setCaptchaVerified] = useState(false);
