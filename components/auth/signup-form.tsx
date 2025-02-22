@@ -1,131 +1,83 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { FormEvent, useState, useEffect, useRef } from "react"
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+"use client";
+import { useState, useEffect, useRef } from "react"; 
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+
 
 declare global {
   interface Window {
     grecaptcha: {
-      render: (element: HTMLElement | string, options: any) => number;
-      getResponse: (widgetId: number) => string;
-      reset: (widgetId: number) => void;
+      render: (id: string, options: { sitekey: string; callback: () => void; theme: string }) => void;
+      getResponse: () => string;
+      ready: (cb: () => void) => void;
     };
-    onRecaptchaLoad?: () => void;
   }
 }
-
 export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
-  const [captchaWidget, setCaptchaWidget] = useState<number | null>(null);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const router = useRouter();
-  const recaptchaRef = useRef<HTMLDivElement>(null);
-
+  const recaptchaRendered = useRef(false); 
   useEffect(() => {
-    // Load the reCAPTCHA script
-    const loadRecaptcha = () => {
-      const script = document.createElement('script');
-      script.src = `https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoad`;
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-    };
-
-    // Define the callback function
-    window.onRecaptchaLoad = () => {
-      if (recaptchaRef.current && window.grecaptcha) {
-        const widgetId = window.grecaptcha.render(recaptchaRef.current, {
-          sitekey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
-          theme: 'dark',
-          callback: (response: string) => {
-            console.log('Captcha completed');
-          }
-        });
-        setCaptchaWidget(widgetId);
-      }
-    };
-
-    loadRecaptcha();
-
-    // Cleanup
-    return () => {
-      delete window.onRecaptchaLoad;
-      // Remove the script tag
-      const scripts = document.getElementsByTagName('script');
-      for (let i = 0; i < scripts.length; i++) {
-        if (scripts[i].src.includes('recaptcha')) {
-          scripts[i].remove();
-          break;
+    if (typeof window !== "undefined" && window.grecaptcha && !recaptchaRendered.current) {
+      window.grecaptcha.ready(() => {
+        if (!recaptchaRendered.current) {
+          window.grecaptcha.render("recaptcha-container", {
+            sitekey: "6LdCHt8qAAAAAMnt_fFhEhg4aZVDPh5njHFhtV1W",
+            theme: "dark",
+            callback: handleCaptchaSuccess,
+          });
+          recaptchaRendered.current = true; // Prevent multiple renders
         }
-      }
-    };
+      });
+    }
   }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    setError(null);
-    e.preventDefault();
-    
-    const formData = new FormData(e.currentTarget);
-    
-    if (formData.get("password") !== formData.get("confirmPassword")) {
-      setError("Passwords do not match");
-      return;
-    }
 
-    if (!captchaWidget) {
-      setError("Please wait for captcha to load");
-      return;
+  const handleCaptchaSuccess = () => {
+    const captchaResponse = window.grecaptcha.getResponse();
+    if (captchaResponse) {
+      setCaptchaVerified(true);
     }
-    
-    const captchaResponse = window.grecaptcha.getResponse(captchaWidget);
-    
-    if (!captchaResponse) {
-      setError("Please complete the captcha");
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!captchaVerified) {
+      setError("Please complete the CAPTCHA.");
       return;
     }
 
     try {
-      const api = "/api/users";
-      const response = await fetch(api, {
+      const formData = new FormData(e.currentTarget);
+      const response = await fetch("/api/users", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.get("name"),
           phoneNumber: formData.get("phone"),
           address: formData.get("address"),
           email: formData.get("email"),
           password: formData.get("password"),
-          captchaResponse: captchaResponse,
+          captchaResponse: window.grecaptcha.getResponse(),
         }),
       });
 
       if (!response.ok) {
         const data = await response.json();
         setError(data.error || "Failed to create account");
-        if (captchaWidget) {
-          window.grecaptcha.reset(captchaWidget);
-        }
       } else {
         router.push("/login");
       }
     } catch (error) {
       console.error("Error adding user:", error);
-      setError((error as Error).message);
-      if (captchaWidget) {
-        window.grecaptcha.reset(captchaWidget);
-      }
+      setError("Something went wrong. Please try again.");
     }
   };
 
@@ -163,18 +115,16 @@ export default function SignupForm() {
             <Label htmlFor="confirmPassword" className="text-gray-100">Confirm Password</Label>
             <Input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your password" required />
           </div>
-          <div className="flex justify-center my-4">
-            <div ref={recaptchaRef}></div>
-          </div>
+
+          <div id="recaptcha-container" className="flex justify-center"></div>
+
           <Button type="submit" className="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white mt-6">
             Sign Up
           </Button>
         </form>
         <div className="mt-6 text-center text-gray-400">
           Already have an account?{" "}
-          <Link href="/login" className="text-red-400 hover:text-red-300">
-            Login
-          </Link>
+          <Link href="/login" className="text-red-400 hover:text-red-300">Login</Link>
         </div>
       </CardContent>
     </Card>
