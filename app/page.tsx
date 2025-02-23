@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,10 +10,32 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Droplet, Users, Calendar, Activity, ChevronRight } from "lucide-react"
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button"
 import Link from 'next/link';
-
+import { useRouter } from "next/navigation";
 export default function BloodDonorSystem() {
   const [activeTab, setActiveTab] = useState("dashboard")
+  const [isLoggedin, setIsLoggedin] = useState(false);
+  const router = useRouter();
+  const checkLogin = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedin(true);
+    }else{
+      setIsLoggedin(false);
+      router.push("/login");
+    }
+}
 
+useEffect(() => {
+  checkLogin();
+  const handleStorageChange = () => {
+    checkLogin();
+  };
+  window.addEventListener("storage", handleStorageChange);
+
+  return () => {
+    window.removeEventListener("storage", handleStorageChange);
+  };
+}, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
@@ -27,14 +49,16 @@ export default function BloodDonorSystem() {
           BloodLink
         </motion.h1>
         <div className="flex items-center space-x-6">
-          <Link href="/login">
-            <Button
-              variant="outline"
-              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
-            >
-              Login
-            </Button>
-          </Link>
+        {!isLoggedin && (
+              <Link href="/login">
+                <Button
+                  variant="outline"
+                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+                >
+                  Login
+                </Button>
+              </Link>)}
+         
         </div>
       </nav>
       </header>
@@ -46,10 +70,11 @@ export default function BloodDonorSystem() {
           transition={{ duration: 0.5 }}
           className="mb-16 text-center"
         >
-          <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
-            Welcome to BloodLink
-          </h2>
-          <p className="text-xl mb-8 text-gray-100">Connecting donors with those in need</p>
+      
+      <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
+    
+      </h2>
+       <p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>
          <InteractiveHoverButton>Become a donor</InteractiveHoverButton>
         </motion.section>
 
@@ -59,7 +84,7 @@ export default function BloodDonorSystem() {
               <TabsTrigger
                 key={tab}
                 value={tab}
-                className="py-3 text-sm md:text-base capitalize bg-gray-800/20 backdrop-blur-sm shadow-md rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-orange-500 data-[state=active]:text-white"
+                className="py-3 text-xs md:text-base capitalize bg-gray-800/20 backdrop-blur-sm shadow-md rounded-lg transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-orange-500 data-[state=active]:text-white"
               >
                 {tab}
               </TabsTrigger>

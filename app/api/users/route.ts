@@ -1,4 +1,4 @@
-// app/api/users/route.ts
+
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import bcrypt from "bcrypt";
@@ -40,7 +40,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, phoneNumber, address, email, password, captchaResponse } = body;
 
-    // Verify reCAPTCHA first
     const isValidCaptcha = await verifyCaptcha(captchaResponse);
     
     if (!isValidCaptcha) {

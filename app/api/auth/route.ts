@@ -16,9 +16,13 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
         }
 
-        const { email, password } = body;
-
-        const rows = await db('SELECT * FROM DONORS WHERE EMAIL = $1', [email]);
+        let rows;
+        const {identifier, password} = body;
+        if (identifier.match(/^\d{10}$/g)) {
+            rows = await db('SELECT * FROM DONORS WHERE phoneNumber = $1', [identifier]);
+        }else{
+            rows = await db('SELECT * FROM DONORS WHERE EMAIL = $1', [identifier]);
+        }
         if(rows.length == 0){
             return NextResponse.json({error: 'Invalid email or password'},{status: 400});
         }
