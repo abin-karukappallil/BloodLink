@@ -10,6 +10,17 @@ import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-b
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import CountUp from "@/components/ui/count-up";
+import {DonorForm} from "@/components/custom/donor-form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+
 
 export default function BloodDonorSystem() {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -36,6 +47,9 @@ export default function BloodDonorSystem() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+  const handleBloodSubmission = () => {
+    //add to db with and hide if user in session has blood submission in db
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
@@ -58,7 +72,6 @@ export default function BloodDonorSystem() {
                   Login
                 </Button>
               </Link>)}
-
           </div>
         </nav>
       </header>
@@ -70,12 +83,30 @@ export default function BloodDonorSystem() {
           transition={{ duration: 0.5 }}
           className="mb-16 text-center"
         >
-
           <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
-
           </h2>
           <p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>
-          <InteractiveHoverButton>Become a donor</InteractiveHoverButton>
+          
+          {/* Fixed drawer implementation - use asChild prop */}
+          <Dialog>
+  <DialogTrigger asChild>
+    <div>
+      <InteractiveHoverButton>
+        Become a Donor
+      </InteractiveHoverButton>
+    </div>
+  </DialogTrigger>
+  <DialogContent className="bg-gray-800/40 border-gray-700/30 backdrop-blur-sm shadow-lg">
+    <DialogHeader>
+      <DialogTitle className="text-white text-center mb-3">Select Blood Group</DialogTitle>
+      <DialogDescription className="flex flex-col justify-center items-center gap-5">
+       <DonorForm/>
+       <Button onClick={handleBloodSubmission}>Submit</Button>
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+          
         </motion.section>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 md:w-full w-full">
@@ -187,7 +218,6 @@ export default function BloodDonorSystem() {
           </AnimatePresence>
         </Tabs>
       </main>
-
     </div>
   )
 }
