@@ -20,8 +20,32 @@ declare global {
 export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<string>("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const recaptchaRendered = useRef(false); 
+  const recaptchaRendered = useRef(false);
+  const keralaCities = [
+    "Adoor", "Alappuzha", "Aluva", "Angamaly", "Anthoor", "Attingal",  
+    "Chalakudy", "Changanassery", "Chavakkad", "Chengannur", "Cherpulassery",  
+    "Cherthala", "Chittur-Thathamangalam", "Erattupetta", "Eloor", "Ettumanoor",  
+    "Feroke", "Guruvayur", "Haripad", "Idukki", "Irinjalakuda", "Iritty",  
+    "Kalpetta", "Kalamassery", "Kanhangad", "Kannur", "Karunagappalli",  
+    "Kasaragod", "Kayamkulam", "Kizhakkekallada", "Kodungallur", "Koduvally",  
+    "Kollam", "Kondotty", "Koothattukulam", "Kothamangalam", "Kottakkal",  
+    "Kottarakara", "Kottayam", "Kozhikode", "Koyilandy", "Kunnamkulam",  
+    "Kuthuparamba", "Malappuram", "Mananthavady", "Manjeri", "Mannarkkad",  
+    "Maradu", "Mattannur", "Mavelikkara", "Mattanur", "Mukkam",  
+    "Muvattupuzha", "Nedumangad", "Neyyattinkara", "Nilambur", "Nileshwaram",  
+    "North Paravur", "Ottappalam", "Palakkad", "Pala", "Pandalam",  
+    "Panoor", "Parappanangadi", "Paravur", "Pathanamthitta", "Pattambi",  
+    "Payyanur", "Payyoli", "Perinthalmanna", "Perumbavoor", "Piravom",  
+    "Ponnani", "Punalur", "Ramanattukara", "Shornur", "Sreekandapuram",  
+    "Sultan Bathery", "Taliparamba", "Tanur", "Thalassery", "Thiruvalla",  
+    "Thiruvananthapuram", "Thodupuzha", "Thrikkakkara", "Thrissur", "Tirur",  
+    "Tirurangadi", "Vadakara", "Vaikom", "Valanchery", "Varkala",  
+    "Wadakkancherry"
+  ];
   useEffect(() => {
     if (typeof window !== "undefined" && window.grecaptcha && !recaptchaRendered.current) {
       window.grecaptcha.ready(() => {
@@ -31,7 +55,7 @@ export default function SignupForm() {
             theme: "dark",
             callback: handleCaptchaSuccess,
           });
-          recaptchaRendered.current = true; // Prevent multiple renders
+          recaptchaRendered.current = true;
         }
       });
     }
@@ -53,6 +77,10 @@ export default function SignupForm() {
       setError("Please complete the CAPTCHA.");
       return;
     }
+    if (!selectedCity) {
+      setError("Please select a city.");
+      return;
+    }
 
     try {
       const formData = new FormData(e.currentTarget);
@@ -62,7 +90,7 @@ export default function SignupForm() {
         body: JSON.stringify({
           name: formData.get("name"),
           phoneNumber: formData.get("phone"),
-          address: formData.get("address"),
+          city: formData.get("city"),
           email: formData.get("email"),
           password: formData.get("password"),
           captchaResponse: window.grecaptcha.getResponse(),
@@ -79,6 +107,15 @@ export default function SignupForm() {
       console.error("Error adding user:", error);
       setError("Something went wrong. Please try again.");
     }
+  };
+
+  const selectCity = (city: string) => {
+    setSelectedCity(city);
+    setDropdownOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
   return (
@@ -104,8 +141,54 @@ export default function SignupForm() {
             <Input id="phone" name="phone" type="tel" placeholder="Enter your phone number" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-gray-100">Address</Label>
-            <Input id="address" name="address" placeholder="Enter your address" required />
+            <Label htmlFor="city" className="text-gray-100">City</Label>
+            <div className="relative" ref={dropdownRef}>
+              <div
+                onClick={toggleDropdown}
+                className="flex h-10 w-full rounded-md border border-gray-700 bg-white px-3 py-2 text-sm text-gray-500 cursor-pointer"
+              >
+                {selectedCity || "Select a city"}
+                <div className="ml-auto">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={`h-4 w-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+                  >
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </div>
+              
+              {dropdownOpen && (
+                <div className="absolute z-10 mt-1 w-full rounded-md border border-gray-700 bg-white shadow-lg max-h-60 overflow-auto">
+                  <div className="py-1">
+                    {keralaCities.map((city) => (
+                      <div
+                        key={city}
+                        className="px-3 py-2 text-sm text-gray-900 hover:bg-gray-200 cursor-pointer"
+                        onClick={() => selectCity(city)}
+                      >
+                        {city}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <input
+                type="hidden"
+                name="city"
+                value={selectedCity}
+                required
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="password" className="text-gray-100">Password</Label>
