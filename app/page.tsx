@@ -6,21 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Droplet, Users, Calendar, ChevronRight } from "lucide-react"
-import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button"
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import CountUp from "@/components/ui/count-up";
-import {DonorForm} from "@/components/custom/donor-form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-
-
+import DonorForm from "@/components/custom/donor-form";
 
 export default function BloodDonorSystem() {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -47,9 +36,7 @@ export default function BloodDonorSystem() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-  const handleBloodSubmission = () => {
-    //add to db with and hide if user in session has blood submission in db
-  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
@@ -87,25 +74,7 @@ export default function BloodDonorSystem() {
           </h2>
           <p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>
           
-          {/* Fixed drawer implementation - use asChild prop */}
-          <Dialog>
-  <DialogTrigger asChild>
-    <div>
-      <InteractiveHoverButton>
-        Become a Donor
-      </InteractiveHoverButton>
-    </div>
-  </DialogTrigger>
-  <DialogContent className="bg-gray-800/40 border-gray-700/30 backdrop-blur-sm shadow-lg">
-    <DialogHeader>
-      <DialogTitle className="text-white text-center mb-3">Select Blood Group</DialogTitle>
-      <DialogDescription className="flex flex-col justify-center items-center gap-5">
-       <DonorForm/>
-       <Button onClick={handleBloodSubmission}>Submit</Button>
-      </DialogDescription>
-    </DialogHeader>
-  </DialogContent>
-</Dialog>
+         <DonorForm />
           
         </motion.section>
 

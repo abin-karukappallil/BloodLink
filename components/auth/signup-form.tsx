@@ -31,7 +31,7 @@ export default function SignupForm() {
             theme: "dark",
             callback: handleCaptchaSuccess,
           });
-          recaptchaRendered.current = true; // Prevent multiple renders
+          recaptchaRendered.current = true; 
         }
       });
     }
