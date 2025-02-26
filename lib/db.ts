@@ -13,7 +13,8 @@ const schema = async () => {
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
         phoneNumber TEXT NOT NULL,
-        address TEXT NOT NULL,
+        city TEXT NOT NULL,
+        bloodGroup TEXT,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL
       )
