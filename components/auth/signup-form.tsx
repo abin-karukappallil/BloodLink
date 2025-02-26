@@ -82,8 +82,9 @@ export default function SignupForm() {
       setError("Please select a city.");
       return;
     }
-
+    
     try {
+      console.log(selectedCity);
       const formData = new FormData(e.currentTarget);
       const response = await fetch("/api/users", {
         method: "POST",
@@ -91,7 +92,7 @@ export default function SignupForm() {
         body: JSON.stringify({
           name: formData.get("name"),
           phoneNumber: formData.get("phone"),
-          city: formData.get("city"),
+          city: selectedCity,
           email: formData.get("email"),
           password: formData.get("password"),
           captchaResponse: window.grecaptcha.getResponse(),
@@ -112,6 +113,7 @@ export default function SignupForm() {
 
   const selectCity = (city: string) => {
     setSelectedCity(city);
+    console.log(city);
     setDropdownOpen(false);
   };
 

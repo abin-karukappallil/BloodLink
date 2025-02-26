@@ -18,17 +18,39 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "../ui/button";
-
+import { useRouter } from "next/navigation";
 export default function DonorForm() {
-
+  const router = useRouter();
   const [bloodGroup, setBloodGroup] = React.useState<string>("");
-
-  const handleBloodSubmission = () => {
-    //add to db with and hide if user in session has blood submission in db
+  const [error, setError] = React.useState<string | null>(null);
+  const handleBloodSubmission = async () => {
+    try{
+    setError(null);
+      const userId = localStorage.getItem("userId");
+      const url = "api/donor";
+      const req = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bloodGroup, userId }),
+      })
+      const res = await req.json();
+      if (!req.ok) {
+        setError("Blood group not added");
+        return;
+      } else {
+        localStorage.setItem("donor", "yes");
+        router.push('/');
+      }
+    }catch(error){
+      setError("Blood group not addded");
+      console.log(error);
+    }
   }
   const handleChangeBlood = (value:string) => {
     setBloodGroup(value);
   }
+ 
+
   return (
 
     <Dialog>
@@ -41,6 +63,7 @@ export default function DonorForm() {
     </DialogTrigger>
     <DialogContent className="bg-gray-800/40 border-gray-700/30 backdrop-blur-sm shadow-lg">
       <DialogHeader>
+        {error && <p className="text-red-500">{error}</p>}
         <DialogTitle className="text-white text-center mb-3">Select Blood Group</DialogTitle>
         <DialogDescription className="flex flex-col justify-center items-center gap-5">
         <Select onValueChange={handleChangeBlood} >

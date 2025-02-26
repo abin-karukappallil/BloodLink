@@ -14,6 +14,7 @@ import DonorForm from "@/components/custom/donor-form";
 export default function BloodDonorSystem() {
   const [activeTab, setActiveTab] = useState("dashboard")
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [isDonor , setIsDonor] = useState(false);
   const router = useRouter();
   const checkLogin = () => {
     const token = localStorage.getItem("token");
@@ -24,11 +25,16 @@ export default function BloodDonorSystem() {
       router.push("/login");
     }
   }
-
+const logout =() => {
+  localStorage.clear();
+  router.push("/login");
+}
   useEffect(() => {
     checkLogin();
+    isDonorCheck();
     const handleStorageChange = () => {
       checkLogin();
+      isDonorCheck();
     };
     window.addEventListener("storage", handleStorageChange);
 
@@ -36,7 +42,10 @@ export default function BloodDonorSystem() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-
+  const isDonorCheck = ()=>{
+    const donor = localStorage.getItem("donor");
+    setIsDonor(donor === "yes");
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
@@ -59,6 +68,16 @@ export default function BloodDonorSystem() {
                   Login
                 </Button>
               </Link>)}
+              {isLoggedin && (
+                <Button
+                  variant="outline"
+                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              )
+              }
           </div>
         </nav>
       </header>
@@ -74,7 +93,8 @@ export default function BloodDonorSystem() {
           </h2>
           <p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>
           
-         <DonorForm />
+         { !isDonor && <DonorForm />}
+         {isDonor && <h2>You are donor now</h2>}
           
         </motion.section>
 

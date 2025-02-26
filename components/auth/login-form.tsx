@@ -36,6 +36,7 @@ export default function LoginForm() {
 
       if (typeof window !== "undefined") {
         localStorage.setItem("token", res.token) 
+        localStorage.setItem("userId", JSON.stringify(res.user.id))
       }
 
       router.push("/") 
