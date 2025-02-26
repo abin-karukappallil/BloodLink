@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -5,27 +7,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Droplet, Users, Calendar, ChevronRight } from "lucide-react";
-import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
+import { Droplet, Users, Calendar } from "lucide-react";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import CountUp from "@/components/ui/count-up";
 import Dropdown from "@/components/ui/dropdown";
-
-// Define the structure of a donor
-interface Donor {
-  id: number; // Assuming each donor has a unique id
-  name: string;
-  city: string;
-  phoneNumber: string;
-}
+import DonorForm from "@/components/custom/donor-form";
 
 export default function BloodDonorSystem() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [donors, setDonors] = useState<Donor[]>([]); // Specify the type for donors
-
+  const [donors, setDonors] = useState<any[]>([]); 
+  const [isDonor , setIsDonor] = useState(false);
   const keralaCities = [
     "Adoor", "Alappuzha", "Aluva", "Angamaly", "Anthoor", "Attingal",
     "Chalakudy", "Changanassery", "Chavakkad", "Chengannur", "Cherpulassery",
@@ -58,6 +52,26 @@ export default function BloodDonorSystem() {
       setIsLoggedin(false);
       router.push("/login");
     }
+}
+, []);
+
+const logout = () => {
+  localStorage.clear();
+  router.push("/login");
+}
+const isDonorCheck = () => {
+  const donor = localStorage.getItem("donor");
+  setIsDonor(donor === "yes"); 
+};
+
+  useEffect(() => {
+    checkLogin();
+    isDonorCheck();
+    const handleStorageChange = () => {
+      checkLogin();
+      isDonorCheck();
+    };
+    window.addEventListener("storage", handleStorageChange);
   }, [router]);
 
   useEffect(() => {
@@ -68,10 +82,13 @@ export default function BloodDonorSystem() {
     const fetchDonors = async () => {
       if (selectedCity) {
         try {
+          console.log(selectedCity)
           const response = await fetch(`/api/users?city=${selectedCity}`);
+
           if (!response.ok) throw new Error("Failed to fetch donors");
           const data = await response.json();
-          setDonors(data.donors); // Assuming the response structure is { donors: [...] }
+          setDonors(data.donors);
+          console.log(data.donors)
         } catch (error) {
           console.error("Error fetching donors:", error);
         }
@@ -82,7 +99,7 @@ export default function BloodDonorSystem() {
   }, [selectedCity]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
+    <div className="md:h-screen h-[130vh] bg-gradient-to-br from-gray-950 via-gray-900 to-red-950  text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
         <nav className="container mx-auto flex justify-between items-center py-4 px-6">
           <motion.h1
@@ -102,8 +119,17 @@ export default function BloodDonorSystem() {
                 >
                   Login
                 </Button>
-              </Link>
-            )}
+              </Link>)}
+              {isLoggedin && (
+                <Button
+                  variant="outline"
+                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              )
+              }
           </div>
         </nav>
       </header>
@@ -116,14 +142,16 @@ export default function BloodDonorSystem() {
           className="mb-16 text-center"
         >
           <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
-            Welcome to BloodLink
           </h2>
           <p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>
-          <InteractiveHoverButton>Become a donor</InteractiveHoverButton>
+          
+         { !isDonor && <DonorForm />}
+         {isDonor && <h2>You are donor now</h2>}
+          
         </motion.section>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 md:w-full w-full">
-          <TabsList className="grid w-full grid-cols-3 mt-32 gap-4 bg-transparent">
+          <TabsList className="grid w-full grid-cols-3 mt-36 gap-4 bg-transparent">
             {["dashboard", "donors", "inventory"].map((tab) => (
               <TabsTrigger
                 key={tab}
@@ -191,32 +219,25 @@ export default function BloodDonorSystem() {
                       required={true}
                       name="city"
                     />
-                    <ul>
-                      {donors.length > 0 ? (
-                        donors.map((donor) => (
-                          <li key={donor.id}>
-                            <strong>{donor.name}</strong> - {donor.city} - {donor.phoneNumber}
-                          </li>
-                        ))
-                      ) : (
-                        <p>No donors found for {selectedCity}</p>
-                      )}
-                    </ul>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-gray-700/20 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <span className="text-white text-sm">Name</span>
+                          <p className="text-white text-sm ">Phone</p>
+                          <p className="text-white text-sm p-0">Blood</p>
+                    </div>
                       {donors.map((donor) => (
                         <motion.div
-                          key={donor.id} // Assuming each donor has a unique id
+                          key={donor.id}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.3, delay: 0.1 }}
                           className="flex items-center justify-between p-4 bg-gray-700/20 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
                         >
-                          <span className="text-white">{donor.name}</span>
-                          <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
-                            <ChevronRight className="h-5 w-5" />
-                          </Button>
+                          <span className="text-white md:text-sm text-xs">{donor.name}</span>
+                          <p className="text-white md:text-sm text-xs md:pr-24"> {donor.phonenumber}</p>
+                          <p className="text-white text-xs md:text-sm"> {donor.bloodgroup}</p>
                         </motion.div>
                       ))}
                     </div>

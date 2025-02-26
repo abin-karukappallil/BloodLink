@@ -14,9 +14,9 @@ const schema = async () => {
         name TEXT NOT NULL,
         phoneNumber TEXT NOT NULL,
         city TEXT NOT NULL,
-        bloodGroup TEXT,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        bloodGroup TEXT DEFAULT 'NULL'
       )
     `;
     console.log("Table created successfully.");

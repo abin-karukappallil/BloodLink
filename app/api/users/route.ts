@@ -38,8 +38,8 @@ async function verifyCaptcha(captchaResponse: string) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, phoneNumber, address, email, password, captchaResponse } = body;
-
+    const { name, phoneNumber, city, email, password, captchaResponse } = body;
+    console.log(city);
     const isValidCaptcha = await verifyCaptcha(captchaResponse);
     
     if (!isValidCaptcha) {
@@ -53,8 +53,8 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     await db`
-      INSERT INTO donors (name, phoneNumber, address, email, password)
-      VALUES (${name}, ${phoneNumber}, ${address}, ${email}, ${hashedPassword});
+      INSERT INTO donors (name, phonenumber, city, email, password)
+      VALUES (${name}, ${phoneNumber}, ${city}, ${email}, ${hashedPassword});
     `;
 
     return NextResponse.json({ message: "User added successfully" }, { status: 201 });
@@ -74,9 +74,8 @@ export async function GET(req: Request) {
     }
 
     const donors = await db`
-      SELECT name, city, phoneNumber FROM donors WHERE city = ${city} AND bloodGroup IS NOT NULL;
+      SELECT id,name, city, phonenumber,bloodgroup FROM donors WHERE city = ${city} AND bloodgroup != 'NULL';
     `;
-
     return NextResponse.json({ donors }, { status: 200 });
   } catch (error) {
     console.error("Error fetching donors:", error);

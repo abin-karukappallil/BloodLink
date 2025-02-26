@@ -54,6 +54,7 @@ export default function SignupForm() {
             callback: handleCaptchaSuccess,
           });
           recaptchaRendered.current = true;
+          recaptchaRendered.current = true; 
         }
       });
     }
@@ -78,8 +79,9 @@ export default function SignupForm() {
       setError("Please select a city.");
       return;
     }
-
+    
     try {
+      console.log(selectedCity);
       const formData = new FormData(e.currentTarget);
       const response = await fetch("/api/users", {
         method: "POST",
@@ -87,7 +89,7 @@ export default function SignupForm() {
         body: JSON.stringify({
           name: formData.get("name"),
           phoneNumber: formData.get("phone"),
-          city: formData.get("city"),
+          city: selectedCity,
           email: formData.get("email"),
           password: formData.get("password"),
           captchaResponse: window.grecaptcha.getResponse(),
@@ -105,6 +107,16 @@ export default function SignupForm() {
       setError("Something went wrong. Please try again.");
     }
   };
+
+  // const selectCity = (city: string) => {
+  //   setSelectedCity(city);
+  //   console.log(city);
+  //   setDropdownOpen(false);
+  // };
+
+  // const toggleDropdown = () => {
+  //   setDropdownOpen(!dropdownOpen);
+  // };
 
   return (
     <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg">
