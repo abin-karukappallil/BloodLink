@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "../ui/button";
+import Cookies from "js-cookie";
 import { useState } from "react";
 export default function DonorForm() {
   const [bloodGroup, setBloodGroup] = React.useState<string>("");
@@ -26,7 +27,7 @@ export default function DonorForm() {
   const handleBloodSubmission = async () => {
     try{
     setError(null);
-      const userId = localStorage.getItem("userId");
+      const userId = Cookies.get("userId");
       const url = "api/donor";
       const req = await fetch(url, {
         method: "POST",
@@ -39,7 +40,7 @@ export default function DonorForm() {
         return;
       }
       void res;
-      localStorage.setItem("donor", "yes");
+      Cookies.set("donor", "yes");
       setDonorAanu(true)
       window.location.reload()
     }catch(error){
@@ -56,8 +57,8 @@ export default function DonorForm() {
     <Dialog>
     <DialogTrigger asChild>
       {!donorAanu && (
-        <div>
-        <InteractiveHoverButton>
+        <div className="mt-8">
+        <InteractiveHoverButton className="md:text-inherit text-sm">
           Become a Donor
         </InteractiveHoverButton>
       </div>

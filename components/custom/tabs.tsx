@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Droplet, Users, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useRouter } from "next/navigation";
 import CountUp from "@/components/ui/count-up";
 import Dropdown from "@/components/ui/dropdown";
 export default function SelectionTab() {

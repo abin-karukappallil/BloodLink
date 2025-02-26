@@ -1,53 +1,28 @@
 "use client"
-import { useEffect, useState, useCallback} from 'react'
+import { useEffect, useState} from 'react'
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import DonorForm from "@/components/custom/donor-form";
-
+import Cookies from 'js-cookie';
 function Hero() {
-  const [isLoggedin, setIsLoggedin] = useState(false);
   const [userName, setUserName] = useState();
   const router = useRouter();
   const [isDonor, setIsDonor] = useState(false);
 
-  const checkLogin = useCallback(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedin(true);
-    } else {
-      setIsLoggedin(false);
-      router.push("/login");
-    }
-}
-, []);
 const isDonorCheck = () => {
-  const donor = localStorage.getItem("donor");
+  const donor = Cookies.get("donor");
   setIsDonor(donor === "yes"); 
 };
 const logout = () => {
-  localStorage.clear();
-  router.push("/login");
+    Cookies.remove("token");
+    Cookies.remove("userId");
+    Cookies.remove("donor");
+    router.push("/login")
 }
-  useEffect(() => {
-    checkLogin();
-    isDonorCheck();
-    const handleStorageChange = () => {
-      checkLogin();
-      isDonorCheck();
-    };
-    window.addEventListener("storage", handleStorageChange);
-  }, [router]);
-
-  useEffect(() => {
-    checkLogin();
-  }, [checkLogin]);
-
- 
   useEffect(()=>{
     const userName = async () => {
-      const userId = localStorage.getItem("userId")
+      const userId = Cookies.get("userId")
       const api = `api/userinfo?userId=${userId}`
       const res = await fetch(api);
       const data = await res.json();
@@ -55,6 +30,7 @@ const logout = () => {
       setUserName(user);
     }
     userName();
+    isDonorCheck();
   },[])
   return (
    <>
@@ -69,16 +45,6 @@ const logout = () => {
             BloodLink
           </motion.h1>
           <div className="flex items-center space-x-6">
-            {!isLoggedin && (
-              <Link href="/login">
-                <Button
-                  variant="outline"
-                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
-                >
-                  Login
-                </Button>
-              </Link>)}
-              {isLoggedin && (
                 <Button
                   variant="outline"
                   className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
@@ -86,8 +52,6 @@ const logout = () => {
                 >
                   Logout
                 </Button>
-              )
-              }
           </div>
         </nav>
       </header>
@@ -106,11 +70,11 @@ const logout = () => {
                 duration: 0.4,
                 scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
             }}
-            className="text-4xl font-semibold"
+            className="md:text-4xl text-xl font-semibold"
           >Hey {userName}</motion.h1>
           {isDonor ? (
           <h2 className="text-xl mt-6 font-bold opacity-30">BLOOD DONOR</h2>
-          ) :(<p className="text-xl mt-6 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>)}
+          ) :(<p className="text-sm md:text-xl mt-6 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>)}
           
          { !isDonor && <DonorForm />}
          </motion.section>

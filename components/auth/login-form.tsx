@@ -8,7 +8,7 @@ import { FormEvent } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
+import Cookies from "js-cookie";
 export default function LoginForm() {
   const [loginType, setLoginType] = useState("email")
   const [identifier, setIdentifier] = useState("")
@@ -18,35 +18,36 @@ export default function LoginForm() {
   
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setError(null) 
-
+    setError(null)
     try {
-      const req = await fetch("/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }),
-      })
-
-      const res = await req.json()
-
-      if (!req.ok) {
-        setError(res.error || "Invalid login")
-        return
-      }
-
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("userId", JSON.stringify(res.user.id));
-        localStorage.setItem("donor",res.user.donor);
-      }
-
-      router.push("/") 
+        const req = await fetch("/api/auth", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ identifier, password }),
+        })
+        const res = await req.json()
+        if (!req.ok) {
+            setError(res.error || "Invalid login")
+            return
+        }
+        const token = req.headers.get("Authorization")?.replace("Bearer ", "")
+        if (!token) {
+            setError("Authentication failed. No token received.")
+            return
+        }
+        Cookies.set("token", token, { secure: true, sameSite: "Strict" })
+        Cookies.set("userId", JSON.stringify(res.user.id), { secure: true, sameSite: "Strict" })
+        if (res.user.donor) {
+            Cookies.set("donor", res.user.donor, { secure: true, sameSite: "Strict" })
+        }
+        router.push("/")
     } catch (err) {
-      console.error("Error:", err)
-      setError("Something went wrong. Try again.")
+        console.error("Error:", err)
+        setError("Something went wrong. Try again.")
     }
-  }
+}
 
+  
   return (
     <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg">
       <CardHeader className="text-center">
