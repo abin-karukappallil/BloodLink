@@ -18,11 +18,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 export default function DonorForm() {
-  const router = useRouter();
   const [bloodGroup, setBloodGroup] = React.useState<string>("");
   const [error, setError] = React.useState<string | null>(null);
+  const [donorAanu, setDonorAanu] = useState(false);
   const handleBloodSubmission = async () => {
     try{
     setError(null);
@@ -37,11 +37,11 @@ export default function DonorForm() {
       if (!req.ok) {
         setError("Blood group not added");
         return;
-      } else {
-        void res;
-        localStorage.setItem("donor", "yes");
-        router.push('/');
       }
+      void res;
+      localStorage.setItem("donor", "yes");
+      setDonorAanu(true)
+      window.location.reload()
     }catch(error){
       setError("Blood group not addded");
       console.log(error);
@@ -50,17 +50,18 @@ export default function DonorForm() {
   const handleChangeBlood = (value:string) => {
     setBloodGroup(value);
   }
- 
 
   return (
 
     <Dialog>
     <DialogTrigger asChild>
-      <div>
+      {!donorAanu && (
+        <div>
         <InteractiveHoverButton>
           Become a Donor
         </InteractiveHoverButton>
       </div>
+      )}
     </DialogTrigger>
     <DialogContent className="bg-gray-800/40 border-gray-700/30 backdrop-blur-sm shadow-lg">
       <DialogHeader>
