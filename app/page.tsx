@@ -1,21 +1,56 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Droplet, Users, Calendar, ChevronRight } from "lucide-react"
-import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button"
+import { useEffect, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Droplet, Users, Calendar, ChevronRight } from "lucide-react";
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import CountUp from "@/components/ui/count-up";
+import Dropdown from "@/components/ui/dropdown";
+
+// Define the structure of a donor
+interface Donor {
+  id: number; // Assuming each donor has a unique id
+  name: string;
+  city: string;
+  phoneNumber: string;
+}
 
 export default function BloodDonorSystem() {
-  const [activeTab, setActiveTab] = useState("dashboard")
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<string>("");
+  const [donors, setDonors] = useState<Donor[]>([]); // Specify the type for donors
+
+  const keralaCities = [
+    "Adoor", "Alappuzha", "Aluva", "Angamaly", "Anthoor", "Attingal",
+    "Chalakudy", "Changanassery", "Chavakkad", "Chengannur", "Cherpulassery",
+    "Cherthala", "Chittur-Thathamangalam", "Erattupetta", "Eloor", "Ettumanoor",
+    "Feroke", "Guruvayur", "Haripad", "Idukki", "Irinjalakuda", "Iritty",
+    "Kalpetta", "Kalamassery", "Kanhangad", "Kannur", "Karunagappalli",
+    "Kasaragod", "Kayamkulam", "Kizhakkekallada", "Kodungallur", "Koduvally",
+    "Kollam", "Kondotty", "Koothattukulam", "Kothamangalam", "Kottakkal",
+    "Kottarakara", "Kottayam", "Kozhikode", "Koyilandy", "Kunnamkulam",
+    "Kuthuparamba", "Malappuram", "Mananthavady", "Manjeri", "Mannarkkad",
+    "Maradu", "Mattannur", "Mavelikkara", "Mattanur", "Mukkam",
+    "Muvattupuzha", "Nedumangad", "Neyyattinkara", "Nilambur", "Nileshwaram",
+    "North Paravur", "Ottappalam", "Palakkad", "Pala", "Pandalam",
+    "Panoor", "Parappanangadi", "Paravur", "Pathanamthitta", "Pattambi",
+    "Payyanur", "Payyoli", "Perinthalmanna", "Perumbavoor", "Piravom",
+    "Ponnani", "Punalur", "Ramanattukara", "Shornur", "Sreekandapuram",
+    "Sultan Bathery", "Taliparamba", "Tanur", "Thalassery", "Thiruvalla",
+    "Thiruvananthapuram", "Thodupuzha", "Thrikkakkara", "Thrissur", "Tirur",
+    "Tirurangadi", "Vadakara", "Vaikom", "Valanchery", "Varkala",
+    "Wadakkancherry"
+  ];
+
   const router = useRouter();
-  const checkLogin = () => {
+
+  const checkLogin = useCallback(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedin(true);
@@ -23,19 +58,29 @@ export default function BloodDonorSystem() {
       setIsLoggedin(false);
       router.push("/login");
     }
-  }
+  }, [router]);
 
   useEffect(() => {
     checkLogin();
-    const handleStorageChange = () => {
-      checkLogin();
-    };
-    window.addEventListener("storage", handleStorageChange);
+  }, [checkLogin]);
 
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
+  useEffect(() => {
+    const fetchDonors = async () => {
+      if (selectedCity) {
+        try {
+          const response = await fetch(`/api/users?city=${selectedCity}`);
+          if (!response.ok) throw new Error("Failed to fetch donors");
+          const data = await response.json();
+          setDonors(data.donors); // Assuming the response structure is { donors: [...] }
+        } catch (error) {
+          console.error("Error fetching donors:", error);
+        }
+      }
     };
-  }, []);
+
+    fetchDonors();
+  }, [selectedCity]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
@@ -57,8 +102,8 @@ export default function BloodDonorSystem() {
                 >
                   Login
                 </Button>
-              </Link>)}
-
+              </Link>
+            )}
           </div>
         </nav>
       </header>
@@ -70,16 +115,15 @@ export default function BloodDonorSystem() {
           transition={{ duration: 0.5 }}
           className="mb-16 text-center"
         >
-
           <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
-
+            Welcome to BloodLink
           </h2>
           <p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>
           <InteractiveHoverButton>Become a donor</InteractiveHoverButton>
         </motion.section>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 md:w-full w-full">
-          <TabsList className="grid w-full  grid-cols-3 mt-32 gap-4 bg-transparent">
+          <TabsList className="grid w-full grid-cols-3 mt-32 gap-4 bg-transparent">
             {["dashboard", "donors", "inventory"].map((tab) => (
               <TabsTrigger
                 key={tab}
@@ -120,7 +164,7 @@ export default function BloodDonorSystem() {
                           <div className="text-3xl font-bold text-white">
                             <CountUp
                               from={0}
-                              to={(item.value)}
+                              to={item.value}
                               separator=","
                               direction="up"
                               duration={1}
@@ -133,23 +177,43 @@ export default function BloodDonorSystem() {
                   ))}
                 </div>
               </TabsContent>
-              <TabsContent value="Donors">
+              <TabsContent value="donors">
                 <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg">
                   <CardHeader>
                     <CardTitle className="text-2xl text-white">Recent Donations</CardTitle>
                     <CardDescription className="text-gray-100">View and manage recent blood donations.</CardDescription>
+                    <Dropdown
+                      label="City"
+                      options={keralaCities}
+                      value={selectedCity}
+                      onChange={setSelectedCity}
+                      placeholder="Select a city"
+                      required={true}
+                      name="city"
+                    />
+                    <ul>
+                      {donors.length > 0 ? (
+                        donors.map((donor) => (
+                          <li key={donor.id}>
+                            <strong>{donor.name}</strong> - {donor.city} - {donor.phoneNumber}
+                          </li>
+                        ))
+                      ) : (
+                        <p>No donors found for {selectedCity}</p>
+                      )}
+                    </ul>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {["John Doe", "Jane Smith", "Alex Johnson"].map((name, index) => (
+                      {donors.map((donor) => (
                         <motion.div
-                          key={name}
+                          key={donor.id} // Assuming each donor has a unique id
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
+                          transition={{ duration: 0.3, delay: 0.1 }}
                           className="flex items-center justify-between p-4 bg-gray-700/20 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
                         >
-                          <span className="text-white">{name}</span>
+                          <span className="text-white">{donor.name}</span>
                           <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
                             <ChevronRight className="h-5 w-5" />
                           </Button>
@@ -187,7 +251,6 @@ export default function BloodDonorSystem() {
           </AnimatePresence>
         </Tabs>
       </main>
-
     </div>
-  )
+  );
 }
