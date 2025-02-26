@@ -20,6 +20,7 @@ export default function BloodDonorSystem() {
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [donors, setDonors] = useState<any[]>([]); 
   const [isDonor , setIsDonor] = useState(false);
+  const [userName, setUserName] = useState();
   const keralaCities = [
     "Adoor", "Alappuzha", "Aluva", "Angamaly", "Anthoor", "Attingal",
     "Chalakudy", "Changanassery", "Chavakkad", "Chengannur", "Cherpulassery",
@@ -94,10 +95,19 @@ const isDonorCheck = () => {
         }
       }
     };
-
     fetchDonors();
   }, [selectedCity]);
-
+  useEffect(()=>{
+    const userName = async () => {
+      const userId = localStorage.getItem("userId")
+      const api = `api/userinfo?userId=${userId}`
+      const res = await fetch(api);
+      const data = await res.json();
+      const user = data.name;
+      setUserName(user);
+    }
+    userName();
+  },[])
   return (
     <div className="md:h-screen h-[130vh] bg-gradient-to-br from-gray-950 via-gray-900 to-red-950  text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
@@ -141,12 +151,24 @@ const isDonorCheck = () => {
           transition={{ duration: 0.5 }}
           className="mb-16 text-center"
         >
+          <motion.h1
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+                duration: 0.4,
+                scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+            }}
+            className="text-4xl font-semibold"
+          >Hey {userName}</motion.h1>
+
           <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
           </h2>
-          <p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>
+          {isDonor ? (
+          <h2 className="text-xl font-bold opacity-30">BLOOD DONOR</h2>
+          ) :(<p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>)}
           
          { !isDonor && <DonorForm />}
-         {isDonor && <h2>You are donor now</h2>}
+         
           
         </motion.section>
 
