@@ -63,3 +63,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to add user" }, { status: 500 });
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const city = searchParams.get("city");
+
+    if (!city) {
+      return NextResponse.json({ error: "City is required" }, { status: 400 });
+    }
+
+    const donors = await db`
+      SELECT name, city, phoneNumber FROM donors WHERE city = ${city} AND bloodGroup IS NOT NULL;
+    `;
+
+    return NextResponse.json({ donors }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching donors:", error);
+    return NextResponse.json({ error: "Failed to fetch donors" }, { status: 500 });
+  }
+}

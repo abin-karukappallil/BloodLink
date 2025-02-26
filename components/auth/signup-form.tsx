@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-
+import Dropdown from "@/components/ui/dropdown"; // Import the new component
 
 declare global {
   interface Window {
@@ -22,7 +22,6 @@ export default function SignupForm() {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const recaptchaRendered = useRef(false);
   const keralaCities = [
@@ -61,7 +60,6 @@ export default function SignupForm() {
       });
     }
   }, []);
-
 
   const handleCaptchaSuccess = () => {
     const captchaResponse = window.grecaptcha.getResponse();
@@ -143,56 +141,17 @@ export default function SignupForm() {
             <Label htmlFor="phone" className="text-gray-100">Phone Number</Label>
             <Input id="phone" name="phone" type="tel" placeholder="Enter your phone number" required />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="city" className="text-gray-100">City</Label>
-            <div className="relative" ref={dropdownRef}>
-              <div
-                onClick={toggleDropdown}
-                className="flex h-10 w-full rounded-md border border-gray-700 bg-white px-3 py-2 text-sm text-gray-500 cursor-pointer"
-              >
-                {selectedCity || "Select a city"}
-                <div className="ml-auto">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={`h-4 w-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
-                  >
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </div>
-              </div>
-              
-              {dropdownOpen && (
-                <div className="absolute z-10 mt-1 w-full rounded-md border border-gray-700 bg-white shadow-lg max-h-60 overflow-auto">
-                  <div className="py-1">
-                    {keralaCities.map((city) => (
-                      <div
-                        key={city}
-                        className="px-3 py-2 text-sm text-gray-900 hover:bg-gray-200 cursor-pointer"
-                        onClick={() => selectCity(city)}
-                      >
-                        {city}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              <input
-                type="hidden"
-                name="city"
-                value={selectedCity}
-                required
-              />
-            </div>
-          </div>
+          
+          <Dropdown
+            label="City"
+            options={keralaCities}
+            value={selectedCity}
+            onChange={setSelectedCity}
+            placeholder="Select a city"
+            required={true}
+            name="city"
+          />
+          
           <div className="space-y-2">
             <Label htmlFor="password" className="text-gray-100">Password</Label>
             <Input id="password" name="password" type="password" placeholder="Create a password" required />
