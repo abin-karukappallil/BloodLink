@@ -35,8 +35,9 @@ export default function LoginForm() {
       }
 
       if (typeof window !== "undefined") {
-        localStorage.setItem("token", res.token) 
-        localStorage.setItem("userId", JSON.stringify(res.user.id))
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("userId", JSON.stringify(res.user.id));
+        localStorage.setItem("donor",res.user.donor);
       }
 
       router.push("/") 

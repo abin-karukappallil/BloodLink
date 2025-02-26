@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     await db`
-      INSERT INTO donors (name, phoneNumber, city, email, password)
+      INSERT INTO donors (name, phonenumber, city, email, password)
       VALUES (${name}, ${phoneNumber}, ${city}, ${email}, ${hashedPassword});
     `;
 
@@ -74,9 +74,8 @@ export async function GET(req: Request) {
     }
 
     const donors = await db`
-      SELECT name, city, phoneNumber FROM donors WHERE city = ${city} AND bloodGroup IS NOT NULL;
+      SELECT id,name, city, phonenumber,bloodgroup FROM donors WHERE city = ${city} AND bloodgroup != 'NULL';
     `;
-
     return NextResponse.json({ donors }, { status: 200 });
   } catch (error) {
     console.error("Error fetching donors:", error);

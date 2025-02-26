@@ -38,6 +38,7 @@ export default function DonorForm() {
         setError("Blood group not added");
         return;
       } else {
+        void res;
         localStorage.setItem("donor", "yes");
         router.push('/');
       }

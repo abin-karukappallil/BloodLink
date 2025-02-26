@@ -21,7 +21,6 @@ export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
   const recaptchaRendered = useRef(false);
   const keralaCities = [
@@ -109,15 +108,15 @@ export default function SignupForm() {
     }
   };
 
-  const selectCity = (city: string) => {
-    setSelectedCity(city);
-    console.log(city);
-    setDropdownOpen(false);
-  };
+  // const selectCity = (city: string) => {
+  //   setSelectedCity(city);
+  //   console.log(city);
+  //   setDropdownOpen(false);
+  // };
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setDropdownOpen(!dropdownOpen);
+  // };
 
   return (
     <Card className="bg-gray-800/20 border-gray-700/30 backdrop-blur-sm shadow-lg">
