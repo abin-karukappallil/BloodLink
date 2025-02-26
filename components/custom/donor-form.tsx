@@ -63,13 +63,13 @@ export default function DonorForm() {
       </div>
       )}
     </DialogTrigger>
-    <DialogContent className="bg-gray-800/40 border-gray-700/30 backdrop-blur-sm shadow-lg">
+    <DialogContent className="bg-gray-800/40 border-gray-700/30 backdrop-blur-sm shadow-lg md:w-auto w-[90vw]">
       <DialogHeader>
         {error && <p className="text-red-500">{error}</p>}
         <DialogTitle className="text-white text-center mb-3">Select Blood Group</DialogTitle>
         <DialogDescription className="flex flex-col justify-center items-center gap-5">
         <Select onValueChange={handleChangeBlood} >
-      <SelectTrigger className="w-[20vw]">
+      <SelectTrigger className="md:w-[20vw] w-[60vw]">
         <SelectValue placeholder="Select a Blood group" />
       </SelectTrigger>
       <SelectContent className="bg-gray-800/40 border-none backdrop-blur-sm shadow-lg">
@@ -86,7 +86,7 @@ export default function DonorForm() {
         </SelectGroup>
       </SelectContent>
     </Select>
-         <Button onClick={handleBloodSubmission}>Submit</Button>
+         <Button className="bg-slate-400 hover:bg-slate-200 border-none text-black" onClick={handleBloodSubmission}>Submit</Button>
         </DialogDescription>
       </DialogHeader>
     </DialogContent>

@@ -105,10 +105,9 @@ const isDonorCheck = () => {
       const data = await res.json();
       const user = data.name;
       setUserName(user);
-      console.log(user);
     }
     userName();
-  })
+  },[])
   return (
     <div className="md:h-screen h-[130vh] bg-gradient-to-br from-gray-950 via-gray-900 to-red-950  text-gray-100">
       <header className="bg-gray-900/30 backdrop-blur-sm shadow-lg border-b border-gray-800/50">
@@ -165,7 +164,7 @@ const isDonorCheck = () => {
           <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-red-400 to-orange-500 text-transparent bg-clip-text">
           </h2>
           {isDonor ? (
-          <h2 className="text-2xl">Donor</h2>
+          <h2 className="text-xl font-bold opacity-30">BLOOD DONOR</h2>
           ) :(<p className="text-xl mb-8 flex items-center justify-center text-gray-100">Connecting donors with those in need</p>)}
           
          { !isDonor && <DonorForm />}
