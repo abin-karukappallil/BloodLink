@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import Dropdown from "@/components/ui/dropdown"; // Import the new component
-
+import {Loader2} from "lucide-react";
+import {motion } from "motion/react";
 declare global {
   interface Window {
     grecaptcha: {
@@ -22,6 +23,7 @@ export default function SignupForm() {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const recaptchaRendered = useRef(false);
   const keralaCities = [
     "Adoor", "Alappuzha", "Aluva", "Angamaly", "Anthoor", "Attingal",  
@@ -69,6 +71,7 @@ export default function SignupForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     setError(null);
 
     if (!captchaVerified) {
@@ -105,6 +108,8 @@ export default function SignupForm() {
     } catch (error) {
       console.error("Error adding user:", error);
       setError("Something went wrong. Please try again.");
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -163,7 +168,20 @@ export default function SignupForm() {
           <div id="recaptcha-container" className="flex justify-center"></div>
 
           <Button type="submit" className="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white mt-6">
-            Sign Up
+          {
+              isLoading ? (
+                <motion.div
+                className="flex items-center justify-center"
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing up...
+              </motion.div>
+              ): (
+                "Sign up"
+              )
+            }
           </Button>
         </form>
         <div className="mt-6 text-center text-gray-400">
