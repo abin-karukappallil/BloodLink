@@ -9,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {Loader2} from "lucide-react";
+import {motion} from "motion/react";
 import {
   Dialog,
   DialogContent,
@@ -24,9 +26,11 @@ export default function DonorForm() {
   const [bloodGroup, setBloodGroup] = React.useState<string>("");
   const [error, setError] = React.useState<string | null>(null);
   const [donorAanu, setDonorAanu] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleBloodSubmission = async () => {
     try{
     setError(null);
+      setIsLoading(true);
       const userId = Cookies.get("userId");
       const url = "api/donor";
       const req = await fetch(url, {
@@ -46,6 +50,8 @@ export default function DonorForm() {
     }catch(error){
       setError("Blood group not addded");
       console.log(error);
+    }finally{
+      setIsLoading(false);
     }
   }
   const handleChangeBlood = (value:string) => {
@@ -87,7 +93,23 @@ export default function DonorForm() {
         </SelectGroup>
       </SelectContent>
     </Select>
-         <Button className="bg-slate-400 hover:bg-slate-200 border-none text-black" onClick={handleBloodSubmission}>Submit</Button>
+         <Button className="bg-slate-400 hover:bg-slate-200 border-none text-black" onClick={handleBloodSubmission}>
+         {
+              isLoading ? (
+                <motion.div
+                className="flex items-center justify-center"
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting
+              </motion.div>
+              ): (
+                "Submit"
+              )
+            }
+
+         </Button>
         </DialogDescription>
       </DialogHeader>
     </DialogContent>

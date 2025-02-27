@@ -8,6 +8,8 @@ import { FormEvent } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Loader2 } from 'lucide-react'
+import {motion} from "motion/react";
 import Cookies from "js-cookie";
 export default function LoginForm() {
   const [loginType, setLoginType] = useState("email")
@@ -15,9 +17,10 @@ export default function LoginForm() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true);
     setError(null)
     try {
         const req = await fetch("/api/auth", {
@@ -44,6 +47,8 @@ export default function LoginForm() {
     } catch (err) {
         console.error("Error:", err)
         setError("Something went wrong. Try again.")
+    }finally{
+      setLoading(false)
     }
 }
 
@@ -114,8 +119,22 @@ export default function LoginForm() {
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-none mt-6"
+            disabled={loading}
           >
-            Login
+            {
+              loading ? (
+                <motion.div
+                className="flex items-center justify-center"
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Logging in....
+              </motion.div>
+              ): (
+                "Login"
+              )
+            }
           </Button>
         </form>
         <div className="mt-6 text-center text-gray-400">
