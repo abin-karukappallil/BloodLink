@@ -131,8 +131,8 @@ export default function SelectionTab() {
                                             <TableHeader className="bg-gray-700/30">
                                                 <TableRow className="hover:bg-gray-700/40 text-clip border-gray-700/30">
                                                     <TableHead className="text-white font-medium">Name</TableHead>
-                                                    <TableHead className="text-white font-medium">Phone</TableHead>
-                                                    <TableHead className="text-white font-medium">Blood Group</TableHead>
+                                                    <TableHead className="text-white font-medium text-center">Phone</TableHead>
+                                                    <TableHead className="text-white font-medium text-right">Blood Group</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
@@ -145,8 +145,8 @@ export default function SelectionTab() {
                                                         className="bg-gray-700/20 hover:bg-gray-700/30 border-gray-700/30 transition-colors duration-200"
                                                     >
                                                         <TableCell className="text-white md:text-sm text-xs">{donor.name}</TableCell>
-                                                        <TableCell className="text-white md:text-sm text-xs">{donor.phonenumber}</TableCell>
-                                                        <TableCell className="text-white md:text-sm text-xs">{donor.bloodgroup}</TableCell>
+                                                        <TableCell className="text-white md:text-sm text-xs text-center">{donor.phonenumber}</TableCell>
+                                                        <TableCell className="text-white md:text-sm text-xs text-right">{donor.bloodgroup}</TableCell>
                                                     </motion.tr>
                                                 ))}
                                             </TableBody>
