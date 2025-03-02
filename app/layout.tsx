@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Inter } from "next/font/google"
+import MouseMoveEffect from "@/components/ui/mouse-tracking";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,9 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+       <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+      <body className={`${inter.className}  bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 overflow-y-scroll text-foreground antialiased`}>
+        <MouseMoveEffect />
         {children}
       </body>
     </html>
