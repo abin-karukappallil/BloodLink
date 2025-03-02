@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import otpGenerator from "otp-generator";
 import { render } from "@react-email/render";
 import redis from "@/lib/redis";
-import OtpEmail from "@/email/verification";
+import {OtpEmail} from "@/email/verification";
 import React from "react";
 import { isEmail } from "validator";
 
