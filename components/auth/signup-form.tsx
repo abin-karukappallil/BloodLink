@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,7 +100,7 @@ export default function SignupForm() {
     setError(null);
     setIsLoadingotp(true)
     try{
-      const res = await fetch("/api/verify-phone/verify-otp",{
+      const res = await fetch("/api/verify-email/verify-otp",{
         method: "POST",
         headers: {"content-type": "application/json"},
         body: JSON.stringify({phoneNumber,otp})
@@ -112,9 +112,12 @@ export default function SignupForm() {
     }
     const data = await res.json();
     console.log(data);
-    setVerifedOtp(data.verified);
-    setSuccess("Otp verified successfully")
-    setIsDialogOpen(false);
+    setVerifedOtp(true);
+    setSuccess("Otp verified successfully");
+    setOtp("")
+    setTimeout(() => {
+      setIsDialogOpen(false);
+    }, 3000);
     }catch(err){
       console.log(err);
     }finally{
@@ -140,7 +143,7 @@ export default function SignupForm() {
     }
 
     try {
-      const res = await fetch("/api/verify-phone/send-otp", {
+      const res = await fetch("/api/verify-email/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phoneNumber }),
@@ -160,6 +163,11 @@ export default function SignupForm() {
       setIsLoadingotp(false);
     }
   };
+
+const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  setPhoneNumber(e.target.value);
+  setVerifedOtp(false);
+}
   const openOtpDialog = () => {
     setIsDialogOpen(true);
     sendOtp();
@@ -171,7 +179,7 @@ export default function SignupForm() {
     setIsLoading(true);
     setError(null);
     if (!verifedOtp) {
-      setError("Please verify phone number");
+      setError("Please verify email");
       setIsLoading(false)
       return;
     }
@@ -316,41 +324,25 @@ export default function SignupForm() {
                   id="email"
                   name="email"
                   type="email"
+                  value={phoneNumber}
+                  onChange={handleChange}
                   placeholder="Enter your email"
                   required
                   className="bg-gray-800/50 text-gray-100 border-gray-700 focus:border-orange-500 focus:ring-orange-500/20 pl-3 transition-all duration-300"
                 />
-              </div>
-            </motion.div>
-
-            <motion.div className="space-y-2" variants={itemVariants}>
-              <Label htmlFor="phone" className="text-gray-100 flex items-center gap-2">
-                <Phone size={16} className="text-orange-400" />
-                Phone Number
-              </Label>
-              <div className="relative">
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  onChange={(e) => { setPhoneNumber(e.target.value); setVerifedOtp(false) }}
-                  placeholder="Enter your phone number"
-                  required
-                  className="bg-gray-800/50 text-gray-100 border-gray-700 focus:border-orange-500 focus:ring-orange-500/20 pl-3 transition-all duration-300"
-                />
-                {phoneNumber && !verifedOtp && (
+                 {phoneNumber && !verifedOtp && (
                   <Button
                     type="button"
                     className="p-2 text-xs mt-2 bg-transparent"
                     onClick={openOtpDialog}
                     disabled={isLoading}
                   >
-                    Verify phone
+                    Verify email
                   </Button>
                 )}
                 {verifedOtp && (
                   <div className="text-green-500 text-xs mt-1">
-                    Phone verified ✓
+                    Email verified ✓
                   </div>
                 )}
 
@@ -363,7 +355,7 @@ export default function SignupForm() {
                     <DialogHeader>
                       <DialogTitle className="text-white text-center">Enter OTP</DialogTitle>
                       <DialogDescription className="text-gray-400 text-center">
-                        Enter the 6-digit code sent to your phone
+                        Enter the 6-digit code sent to your email
                       </DialogDescription>
                     </DialogHeader>
 
@@ -425,6 +417,23 @@ export default function SignupForm() {
                    
                   </DialogContent>
                 </Dialog>
+              </div>
+            </motion.div>
+
+            <motion.div className="space-y-2" variants={itemVariants}>
+              <Label htmlFor="phone" className="text-gray-100 flex items-center gap-2">
+                <Phone size={16} className="text-orange-400" />
+                Phone Number
+              </Label>
+              <div className="relative">
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  required
+                  className="bg-gray-800/50 text-gray-100 border-gray-700 focus:border-orange-500 focus:ring-orange-500/20 pl-3 transition-all duration-300"
+                />
               </div>
             </motion.div>
 
