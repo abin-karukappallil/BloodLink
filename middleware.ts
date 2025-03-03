@@ -8,7 +8,7 @@ export async function middleware(req: NextRequest) {
     const token = req.cookies.get("token")?.value; 
     const { pathname } = req.nextUrl;
     if (!token) {
-        if (pathname !== '/login') {
+        if (pathname !== '/login'&& pathname !== "/signup") {
             console.log("No token found, redirecting to login...");
             return NextResponse.redirect(new URL("/login", req.url));
         }
@@ -18,9 +18,10 @@ export async function middleware(req: NextRequest) {
         const secretKey = new TextEncoder().encode(SECRET_KEY);
         const { payload } = await jwtVerify(token, secretKey);
         console.log("Decoded Token:", payload);
-        if (pathname === '/login') {
+        if (token && (pathname === "/login" || pathname === "/signup")) {
             return NextResponse.redirect(new URL("/", req.url));
         }
+
         return NextResponse.next();
 
     } catch (error) {
@@ -32,5 +33,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/', '/login'],
+    matcher: ['/', '/login','/signup'],
 };
