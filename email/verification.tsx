@@ -27,7 +27,7 @@ import {
         <Body style={main}>
           <Container style={container}>
             <Section style={headerSection}>
-              <Img src="https://i.imgur.com/I5T8ln6.gif" width="300" height="250" alt="BloodLink Logo" style={logo} />
+              <Img src="https://i.imgur.com/FKmX7dt.gif" width="300" height="250" alt="BloodLink Logo" style={logo} />
             </Section>
   
             <Section style={heroSection}>
