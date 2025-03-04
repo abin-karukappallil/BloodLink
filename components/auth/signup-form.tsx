@@ -132,6 +132,8 @@ export default function SignupForm() {
     }
   };
   const sendOtp = async () => {
+    setError(null);
+    setSuccess("")
     if (!phoneNumber) return;
     setIsLoadingotp(true);
     setError(null);
@@ -361,12 +363,12 @@ const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 
                     {error && (
                       <div className="bg-red-500/20 border border-red-500/30 p-2 rounded">
-                        <p className="text-red-400 text-sm text-center">{error}</p>
+                        <p className="text-white text-sm text-center">{error}</p>
                       </div>
                     )}
                     { sucess && (
                         <div className="bg-green-500/20 border border-green-500/30 p-2 rounded">
-                        <p className="text-greeb-400 text-sm text-center">{sucess}</p>
+                        <p className="text-white text-sm text-center">{sucess}</p>
                       </div>
                     )
                     }
