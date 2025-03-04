@@ -89,7 +89,7 @@ export default function DonorForm() {
           <SelectItem value="O+">O+</SelectItem>
           <SelectItem value="O-">O-</SelectItem>
           <SelectItem value="AB+">AB+</SelectItem>
-          <SelectItem value="AB=">AB-</SelectItem>
+          <SelectItem value="AB-">AB-</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

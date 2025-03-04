@@ -66,7 +66,7 @@ export default function SelectionTab() {
           const response = await fetch(`/api/users?city=${selectedCity}`)
           if (!response.ok) throw new Error("Failed to fetch donors")
           const data = await response.json()
-          setDonors(data.donors || [])
+          setDonors(data.donors)
         } catch (error) {
           console.error("Error fetching donors:", error)
         } finally {
@@ -286,15 +286,19 @@ export default function SelectionTab() {
                             </TableCell>
                           </TableRow>
                         ) :  selectedCity ? (
-                          <TableRow>
-                            <TableCell colSpan={3} className="text-center py-8 text-gray-400">
-                              No donors found in {selectedCity}
-                            </TableCell>
-                          </TableRow>
+                          <>
+                              {donors.map((donor) => (
+                                <TableRow key={donor.id} className="hover:bg-gray-700/40 border-gray-700/30">
+                                  <TableCell className="text-white text-left font-medium">{donor.name}</TableCell>
+                                  <TableCell className="text-white text-center font-medium">{donor.phonenumber}</TableCell>
+                                  <TableCell className="text-white text-right font-medium">{donor.bloodgroup}</TableCell>
+                                </TableRow>
+                              ))}
+                              </>
                         ) : (
                           <TableRow>
                             <TableCell colSpan={3} className="text-center py-8 text-gray-400">
-                              Select a city to view available donors
+                              No donors found in {selectedCity}
                             </TableCell>
                           </TableRow>
                         )}
