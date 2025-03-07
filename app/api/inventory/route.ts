@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 export async function GET() {
   try {
     const inventory = await db(`SELECT bloodgroup, COUNT(*) AS units FROM donors where bloodgroup!='NULL' GROUP BY bloodgroup`);
-    console.log(inventory)
     const categorizedInventory = inventory.map((blood) => {
       let status;
 

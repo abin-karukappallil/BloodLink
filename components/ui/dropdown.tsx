@@ -53,7 +53,7 @@ export default function Dropdown({
       <div className="relative" ref={dropdownRef}>
         <div
           onClick={toggleDropdown}
-          className="flex h-10 w-full bg-gray-800/50 border-gray-700 focus:border-orange-500 focus:ring-orange-500/20 transition-all duration-300 rounded-md border px-3 py-2 text-sm text-gray-100 cursor-pointer"
+          className="flex h-10 w-72 md:w-full bg-gray-800/50 border-gray-700 focus:border-orange-500 focus:ring-orange-500/20 transition-all duration-300 rounded-md border px-3 py-2 text-sm text-gray-100 cursor-pointer"
         >
           {value || placeholder}
           <div className="ml-auto">
@@ -75,7 +75,7 @@ export default function Dropdown({
         </div>
         
         {dropdownOpen && (
-          <div className="absolute z-10 mt-1 w-full rounded-md border bg-gray-800 border-gray-700 text-white shadow-lg max-h-60 overflow-auto">
+          <div className="absolute z-10 mt-1 md:w-full w-72 rounded-md border bg-gray-800 border-gray-700 text-white shadow-lg max-h-60 overflow-auto">
             <div className="py-1">
               {options.map((option) => (
                 <div
