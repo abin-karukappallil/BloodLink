@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin } from 'lucide-react';
 import Dropdown from '@/components/ui/dropdown';
 import Cookies from 'js-cookie';
-export const Profile = () => {
+export default function Profile() {
     const [editProfile,setEditProfile] = useState(false);
     const [loading,setLoading]=useState(false);
     const [name,setName]=useState("");
@@ -161,4 +161,3 @@ export const Profile = () => {
     )
 }
 
-export default Profile

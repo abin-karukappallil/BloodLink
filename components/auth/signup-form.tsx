@@ -374,7 +374,7 @@ const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
                     }
                     { sucess && (
                         <div className="flex flex-col justify-center items-center">
-                       <h1 className="font-semibold text-red-800">Didn't get email?</h1>
+                       <h1 className="font-semibold text-red-800">Didnt get email?</h1>
                        <hr />
                        <p className="text-white text-xs text-center">Check spam for mail or just wait for 2 minutes and if it doesnt works resend otp</p>
                        </div>
