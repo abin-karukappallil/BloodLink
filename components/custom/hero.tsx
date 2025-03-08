@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import DonorForm from "@/components/custom/donor-form"
 import Cookies from "js-cookie"
-import { LogOut, Heart, Droplet } from "lucide-react"
+import { CircleUserRound, Heart, Droplet } from "lucide-react"
 
 function Hero() {
   const [userName, setUserName] = useState("")
@@ -17,12 +17,7 @@ function Hero() {
     setIsDonor(donor === "yes")
   }, [])
 
-  const logout = () => {
-    Cookies.remove("token")
-    Cookies.remove("userId")
-    Cookies.remove("donor")
-    router.push("/login")
-  }
+
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -75,13 +70,8 @@ function Hero() {
             transition={{ duration: 0.3, delay: 0.2 }}
             className="flex items-center space-x-6"
           >
-            <Button
-              variant="outline"
-              className="border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-white transition-all duration-300 group"
-              onClick={logout}
-            >
-              <LogOut className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform duration-300" />
-              Logout
+            <Button className="bg-transparent hover:bg-red-500/20 rounded-full w-fit" onClick={()=>router.push("/profile")}>
+            <CircleUserRound size={36} color="#faebeb" />
             </Button>
           </motion.div>
         </nav>
