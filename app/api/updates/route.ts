@@ -5,6 +5,7 @@ interface bodyType{
     name:string
     phonenumber:string
     email:string
+    city:string
     bloodgroup:string
     id:string
 }
@@ -25,8 +26,8 @@ export async function GET(req:Request) {
 export async function POST(req:Request){
     try{
         const body:bodyType = await req.json();
-        const {name,phonenumber,email,bloodgroup,id} = body;
-        await db('UPDATE DONORS SET name=$1, phonenumber=$2, email=$3, bloodgroup=$4 WHERE id=$5',[name,phonenumber,email,bloodgroup,id])
+        const {name,phonenumber,city,email,bloodgroup,id} = body;
+        await db('UPDATE DONORS SET name=$1, phonenumber=$2, city=$3, email=$4, bloodgroup=$5 WHERE id=$6',[name,phonenumber,city,email,bloodgroup,id])
         return NextResponse.json({status:200})
     }catch(er){
         console.log(er);
