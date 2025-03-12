@@ -15,7 +15,7 @@ export async function GET(req:Request) {
         const {searchParams} = new URL(req.url);
         const idGet = (searchParams.get("id"));
         const id=Number(idGet);
-        const row = await db("SELECT name,bloodgroup,phonenumber,email,city FROM DONORS WHERE id=$1",[id]);
+        const row = await db("SELECT name,bloodgroup,phonenumber,email,city,avatar FROM DONORS WHERE id=$1",[id]);
         return NextResponse.json({status:200,row})
     }catch(e){
         console.log(e);
