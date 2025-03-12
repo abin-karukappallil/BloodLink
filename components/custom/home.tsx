@@ -66,7 +66,7 @@ export default function LandingPage() {
               <h1 className="text-xl font-bold text-gray-100">
                 <span className="m-0 p-0 text-red-700">B</span>loodLink
               </h1>
-              <p className="text-xs text-gray-400">Connecting Donors, Saving Lives</p>
+              <p className="text-[0.50rem] md:text-xs text-gray-400">Connecting Donors,Saving Lives</p>
             </div>
           </div>
 
@@ -75,7 +75,7 @@ export default function LandingPage() {
               variant="outline"
               size="sm"
               onClick={() => router.push("/login")}
-              className="text-red-400 border-red-800 hover:bg-red-950"
+              className="text-red-400  border-red-800 hover:bg-red-950"
             >
               Log In
             </Button>

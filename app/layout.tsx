@@ -17,6 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <meta name="theme-color" content="#000000"/>
        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
        <body className={`${inter.className} bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 h-full min-h-screen `}>
           <MouseMoveEffect />
