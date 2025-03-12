@@ -5,7 +5,7 @@ import { ChatBot } from "@/components/custom/chat-bot";
 import Cookies from "js-cookie";
 import LandingPage from "@/components/custom/home"
 export default function BloodDonorSystem() {
-  const token = Cookies.get("userId")
+  const token = Cookies.get("token")
   if(!token){
     return(
       <LandingPage />
