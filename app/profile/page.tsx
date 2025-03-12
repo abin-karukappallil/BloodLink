@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import DonorForm from "@/components/custom/donor-form"
 import { useRouter } from "next/navigation"
+import ImageUpload from "@/components/custom/upload-image"
 
 export default function Profile() {
   const [editProfile, setEditProfile] = useState(false)
@@ -156,7 +157,7 @@ export default function Profile() {
     Cookies.remove("token")
     Cookies.remove("userId")
     Cookies.remove("donor")
-    router.push("/login")
+    router.push("/")
   }
   
   const fadeIn = {
@@ -215,10 +216,14 @@ export default function Profile() {
               <div className="absolute -bottom-16 left-4 sm:left-8">
                 <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-gray-800 shadow-lg">
                   <AvatarImage src="/default.jpg" alt={name} />
+                    
                   <AvatarFallback className="bg-green-700 text-white text-2xl">
                     {name.split(' ').map(word => word[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
+                <div className="mx-auto mt-5">
+                <ImageUpload />
+                </div>
               </div>
 
               <div className="absolute top-4 right-4">
