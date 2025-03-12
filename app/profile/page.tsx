@@ -25,7 +25,8 @@ export default function Profile() {
   const [email, setEmail] = useState("")
   const [phonenumber, setPhonenumber] = useState("")
   const [bloodgroup, setBloodgroup] = useState("")
-  const [city, setCity] = useState("")
+  const [city, setCity] = useState("");
+  const [avatar, setAvatar] = useState("");
   const keralaCities = [
     "Adoor", "Alappuzha", "Aluva", "Angamaly", "Anthoor", "Attingal",
     "Chalakudy", "Changanassery", "Chavakkad", "Chengannur", "Cherpulassery",
@@ -75,7 +76,7 @@ export default function Profile() {
       setEmail(data.row[0].email)
       setPhonenumber(data.row[0].phonenumber)
       setCity(data.row[0].city)
-
+      setAvatar(data.row[0].avatar)
       setOriginalData({
         name: data.row[0].name,
         bloodgroup: data.row[0].bloodgroup,
@@ -159,7 +160,7 @@ export default function Profile() {
     Cookies.remove("donor")
     router.push("/")
   }
-  
+
   const fadeIn = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5 } },
@@ -213,17 +214,19 @@ export default function Profile() {
         <motion.div initial="hidden" animate="visible" variants={fadeIn} className="max-w-4xl mx-auto">
           <Card className="bg-gray-800/60 border-gray-700 backdrop-blur-sm shadow-xl overflow-hidden">
             <div className="h-32 bg-gradient-to-r from-green-900/40 to-emerald-800/40 relative">
-              <div className="absolute -bottom-16 left-4 sm:left-8">
+              <div className="flex flex-col-reverse gap-[-20px] items-end absolute -bottom-16 left-4 sm:left-8">
+              <div className="absolute bottom-0 right-0 z-[11] justify-end items-end">
+                    <ImageUpload />
+                  </div>
                 <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-gray-800 shadow-lg">
-                  <AvatarImage src="/default.jpg" alt={name} />
-                    
+                  <AvatarImage src={avatar || "/default.jpg"} alt={name} />
+                  
                   <AvatarFallback className="bg-green-700 text-white text-2xl">
                     {name.split(' ').map(word => word[0]).join('')}
+
                   </AvatarFallback>
                 </Avatar>
-                <div className="mx-auto mt-5">
-                <ImageUpload />
-                </div>
+
               </div>
 
               <div className="absolute top-4 right-4">
