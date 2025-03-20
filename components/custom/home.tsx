@@ -1,11 +1,13 @@
 "use client"
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { useState, useEffect, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Heart, Users, Award, ArrowRight, ChevronDown, Droplet, Activity, MapPin } from "lucide-react"
+import { Heart, Users, Award, ArrowRight, ChevronDown, Droplet, Activity, MapPin, Plus, Minus } from "lucide-react"
 import Image from "next/image"
 import CountUp from "@/components/ui/count-up"
 import { useRouter } from "next/navigation"
+import { FAQSection } from "@/components/custom/faq-section"
+
 export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false)
   const router = useRouter()
@@ -131,7 +133,12 @@ export default function LandingPage() {
                   Become a Donor
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => router.push("/login")} className="border-red-200 text-red-600 hover:bg-red-50">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => router.push("/login")}
+                  className="border-red-200 text-red-600 hover:bg-red-50"
+                >
                   Find Blood Centers
                 </Button>
               </motion.div>
@@ -283,6 +290,9 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      <FAQSection />
+    
       <footer className="py-12 bg-black text-gray-300">
         <div className="container flex flex-col px-4 mx-auto sm:px-6 lg:px-8">
           <div className="flex flex-row justify-evenly">
