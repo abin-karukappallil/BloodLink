@@ -151,8 +151,11 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    fetchDetails()
-  }, [])
+    if (typeof window !== "undefined") {
+      fetchDetails();
+    }
+  }, []);
+  
 
   const logout = () => {
     Cookies.remove("token")

@@ -39,7 +39,29 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { name, phoneNumber, city, email, password, captchaResponse } = body;
-    console.log(city);
+    console.log(email.split('@')[1]);
+    if(email.split('@')[1]=="hospital.com"){
+      console.log(true);
+      const isValidCaptcha = await verifyCaptcha(captchaResponse);
+    
+      if (!isValidCaptcha) {
+        console.error("Captcha verification failed");
+        return NextResponse.json(
+          { error: "Captcha verification failed. Please try again." },
+          { status: 400 }
+        );
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+    
+      await db`
+        INSERT INTO hospitals (name, phonenumber, city, email, password)
+        VALUES (${name}, ${phoneNumber}, ${city}, ${email}, ${hashedPassword});
+      `;
+  
+      return NextResponse.json({ message: "Hosptial added successfully" }, { status: 201 });
+    }else{
+   
     const isValidCaptcha = await verifyCaptcha(captchaResponse);
     
     if (!isValidCaptcha) {
@@ -58,6 +80,7 @@ export async function POST(req: Request) {
     `;
 
     return NextResponse.json({ message: "User added successfully" }, { status: 201 });
+  }
   } catch (error) {
     console.error("Error adding user:", error);
     return NextResponse.json({ error: "Failed to add user" }, { status: 500 });

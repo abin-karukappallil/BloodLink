@@ -166,10 +166,19 @@ export default function SignupForm() {
     }
   };
 
-const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-  setPhoneNumber(e.target.value);
-  setVerifedOtp(false);
-}
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value.trim();
+    setPhoneNumber(inputValue); 
+  
+    const domainRegex = /^[^@]+@hospital\.com$/i; 
+    if (domainRegex.test(inputValue)) {
+      setVerifedOtp(true);
+      console.log("ok");
+    } else {
+      setVerifedOtp(false);
+    }
+  };
+  
   const openOtpDialog = () => {
     setIsDialogOpen(true);
     sendOtp();

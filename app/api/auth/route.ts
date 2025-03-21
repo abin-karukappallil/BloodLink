@@ -14,10 +14,16 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing identifier or password' }, { status: 400 });
         }
         let rows;
+        let hospital=false;
         if (/^\d{10}$/.test(identifier)) {
             rows = await db('SELECT * FROM DONORS WHERE phonenumber = $1', [identifier]);
         } else {
-            rows = await db('SELECT * FROM DONORS WHERE LOWER(email) = LOWER($1)', [identifier]);
+            if(identifier.split('@')[1]=="hospital.com"){
+                rows = await db('SELECT * FROM HOSPITALS WHERE LOWER(email) = LOWER($1)', [identifier]);
+                hospital=true;
+            }else{
+                rows = await db('SELECT * FROM DONORS WHERE LOWER(email) = LOWER($1)', [identifier]);
+            }
         }
         if (!rows || rows.length === 0) {
             return NextResponse.json({ error: 'Invalid email or password' }, { status: 400 });
@@ -31,15 +37,28 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
         }
         const token = jwt.sign({ userId: user.id },SECRET_KEY,{ expiresIn: '1h' });
-        const response = NextResponse.json({
-            user: {
-                id: user.id,
-                email: user.email,
-                donor: user.bloodgroup !== 'NULL' ? 'yes' : undefined,
-            }
-        },{status: 200});
-        response.headers.set("Authorization", `Bearer ${token}`);
-        return response;
+        if(hospital){
+            const response = NextResponse.json({
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    hospital: "true"
+                }
+            },{status: 200});
+            response.headers.set("Authorization", `Bearer ${token}`);
+            return response;
+        }else{
+            const response = NextResponse.json({
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    donor: user.bloodgroup !== 'NULL' ? 'yes' : undefined,
+                }
+            },{status: 200});
+            response.headers.set("Authorization", `Bearer ${token}`);
+            return response;
+        }
+       
     } catch (error) {
         console.error('Error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

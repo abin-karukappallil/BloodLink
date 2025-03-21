@@ -19,7 +19,6 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
@@ -35,17 +34,27 @@ export default function LoginForm() {
         setError(res.error || "Invalid login")
         return
       }
+      console.log(res);
       const token = req.headers.get("Authorization")?.replace("Bearer ", "")
       if (!token) {
         setError("Authentication failed. No token received.")
         return
       }
       Cookies.set("token", token, { secure: true, sameSite: "Strict" })
-      Cookies.set("userId", JSON.stringify(res.user.id), { secure: true, sameSite: "Strict" })
+      
       if (res.user.donor) {
         Cookies.set("donor", res.user.donor, { secure: true, sameSite: "Strict" })
       }
+      if (res.user.hospital) {
+        Cookies.set("hospital", res.user.hospital, { secure: true, sameSite: "Strict" })
+        Cookies.set("hosId", JSON.stringify(res.user.id), { secure: true, sameSite: "Strict" })
+        router.push("/hospital")
+        console.log("ok");
+        return;
+      }else{
+      Cookies.set("userId", JSON.stringify(res.user.id), { secure: true, sameSite: "Strict" })
       router.push("/")
+      }
     } catch (err) {
       console.error("Error:", err)
       setError("Something went wrong. Try again.")

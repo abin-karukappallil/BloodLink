@@ -19,6 +19,16 @@ const schema = async () => {
         bloodGroup TEXT DEFAULT 'NULL'
       )
     `;
+    await db `
+    
+    CREATE TABLE IF NOT EXISTS HOSPITALS (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      phoneNumber TEXT NOT NULL,
+      city TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL
+      )`;
     console.log("Table created successfully.");
   } catch (error) {
     console.error("Error creating table:", error);

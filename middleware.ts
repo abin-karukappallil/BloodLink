@@ -6,6 +6,7 @@ const SECRET_KEY = process.env.SECRET_KEY || " ";
 
 export async function middleware(req: NextRequest) {
     const token = req.cookies.get("token")?.value; 
+    const hos = req.cookies.get("hospital")?.value;
     const { pathname } = req.nextUrl;
     if (!token) {
         if (pathname !== '/login'&& pathname !== "/signup") {
@@ -18,10 +19,18 @@ export async function middleware(req: NextRequest) {
         const secretKey = new TextEncoder().encode(SECRET_KEY);
         const { payload } = await jwtVerify(token, secretKey);
         console.log("Decoded Token:", payload);
+        if (hos && ["/profile", "/login", "/signup", "/"].includes(pathname)) {
+            return NextResponse.redirect(new URL("/hospital", req.url));
+        }
         if (token && (pathname === "/login" || pathname === "/signup")) {
             return NextResponse.redirect(new URL("/", req.url));
         }
-
+        if(!hos && pathname === "/hospital") {
+            return NextResponse.redirect(new URL("/", req.url));
+        }
+        if (hos==="true" && pathname === "/") {
+            return NextResponse.redirect(new URL("/hospital", req.url));
+        }
         return NextResponse.next();
 
     } catch (error) {
@@ -33,5 +42,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/login','/signup','/profile'],
+    matcher: ['/','/login','/signup','/profile',"/hospital"],
 };
