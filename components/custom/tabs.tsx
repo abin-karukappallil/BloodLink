@@ -18,7 +18,7 @@ export default function SelectionTab() {
   const [donors, setDonors] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [inventory,setInventory] = useState<any[]>([])
-
+  const [dataAlert,setDataAlert]=useState([]);
   const keralaCities = [
     "Adoor", "Alappuzha", "Aluva", "Angamaly", "Anthoor", "Attingal",
     "Chalakudy", "Changanassery", "Chavakkad", "Chengannur", "Cherpulassery",
@@ -74,11 +74,20 @@ export default function SelectionTab() {
         }
       }
     }
+    const fetchAlert = async () => {
+      const res = await fetch("/api/hospital");
+      const data = await res.json();
+      setDataAlert(data.data);
+      if(!res.ok){
+        console.log("errorrrrrr")
+      }
+    }
     const fetchInventory = async () => {
         const res = await fetch("/api/inventory");
         const data = await res.json();
         setInventory(data);
     };
+    fetchAlert();
     fetchDonors();
     fetchInventory();
   }, [selectedCity])
@@ -189,56 +198,42 @@ export default function SelectionTab() {
               >
                 <Card className="bg-gray-900/70 border-gray-800/30 backdrop-blur-sm shadow-lg overflow-hidden">
                   <CardHeader>
-                    <CardTitle className="text-xl text-white">Recent Activity</CardTitle>
+                    <CardTitle className="text-xl text-white">Recent Alerts</CardTitle>
                     <CardDescription className="text-gray-400">
                       Latest updates from the blood donation network
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {[
-                        {
-                          message: "Emergency request for O- blood type in Kottayam",
-                          time: "2 hours ago",
-                          icon: AlertCircle,
-                          urgent: true,
-                        },
-                        { message: "New donor registered from Thrissur", time: "5 hours ago", icon: Users },
-                        {
-                          message: "Successful donation completed at Kozhikode center",
-                          time: "Yesterday",
-                          icon: Heart,
-                        },
-                        {
-                          message: "Blood drive scheduled for next weekend in Thiruvananthapuram",
-                          time: "2 days ago",
-                          icon: Calendar,
-                        },
-                      ].map((activity, i) => (
+                    {dataAlert.map((data:any) => (
                         <motion.div
-                          key={i}
+                          key={data.id}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: 0.5 + i * 0.1 }}
-                          className={`flex items-start gap-3 p-3 rounded-lg ${activity.urgent ? "bg-red-950/30 border border-red-800/30" : "bg-gray-800/30"}`}
+                          transition={{ duration: 0.3, delay: 0.5 + data.id * 0.1 }}
+                          className={`flex items-start gap-3 p-3 rounded-lg bg-red-800/30`}
                         >
-                          <div className={`p-2 rounded-full ${activity.urgent ? "bg-red-500/20" : "bg-gray-700/50"}`}>
-                            <activity.icon
-                              className={`h-4 w-4 ${activity.urgent ? "text-red-400" : "text-gray-400"}`}
+                          <div className={`p-2 rounded-full bg-gray-700/50`}>
+                            <AlertCircle
+                              className="h-4 w-4 text-gray-400"
                             />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm text-gray-200">{activity.message}</p>
-                            <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
+                            <p className="text-sm text-gray-200">{data.content}</p>
+                            <p className="text-xs text-gray-400 mt-1">{data.date.split("T")[0]}</p>
                           </div>
-                          {activity.urgent && (
                             <Badge
-                              variant="destructive"
+                              variant="secondary"
                               className="bg-red-500/20 text-red-300 hover:bg-red-500/30 border border-red-500/30"
                             >
-                              Urgent
+                              {data.bloodgroup}
                             </Badge>
-                          )}
+                            <Badge
+                              variant="secondary"
+                              className="bg-red-500/20 text-red-300 hover:bg-red-500/30 border border-red-500/30"
+                            >
+                             units: {data.units}
+                            </Badge>
                         </motion.div>
                       ))}
                     </div>

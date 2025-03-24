@@ -21,7 +21,7 @@ export async function GET(req:Request) {
         console.log(e);
         return NextResponse.json({status:500})
     }
-}
+}   
 
 export async function POST(req:Request){
     try{

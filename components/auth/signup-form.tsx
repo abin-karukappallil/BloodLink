@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import Dropdown from "@/components/ui/dropdown"; // Import the new component
+import Dropdown from "@/components/ui/dropdown";
 import { Loader2, User, Mail, Phone, MapPin, Lock, KeyRound } from "lucide-react";
 import { motion } from "framer-motion";
 import {

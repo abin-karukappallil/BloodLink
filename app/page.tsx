@@ -1,16 +1,11 @@
 "use client"
-import { useState, useEffect } from "react";
 import SelectionTab from "@/components/custom/tabs";
 import Hero from "@/components/custom/hero";
 import { ChatBot } from "@/components/custom/chat-bot";
 import Cookies from "js-cookie";
 import LandingPage from "@/components/custom/home"
 export default function BloodDonorSystem() {
-    const [token, setToken] = useState<string | null>(null);
-  
-    useEffect(() => {
-      setToken(Cookies.get("token") || null);
-    }, []);
+    const token = Cookies.get("token");
   if(!token){
     return(
       <LandingPage />
