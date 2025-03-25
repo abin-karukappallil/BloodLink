@@ -10,8 +10,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import CountUp from "@/components/ui/count-up"
 import Dropdown from "@/components/ui/dropdown"
 import { Badge } from "@/components/ui/badge"
-
-
+import Alerts from "@/components/custom/alert";
 export default function SelectionTab() {
   const [selectedCity, setSelectedCity] = useState<string>("")
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -74,20 +73,12 @@ export default function SelectionTab() {
         }
       }
     }
-    const fetchAlert = async () => {
-      const res = await fetch("/api/hospital");
-      const data = await res.json();
-      setDataAlert(data.data);
-      if(!res.ok){
-        console.log("errorrrrrr")
-      }
-    }
+
     const fetchInventory = async () => {
         const res = await fetch("/api/inventory");
         const data = await res.json();
         setInventory(data);
     };
-    fetchAlert();
     fetchDonors();
     fetchInventory();
   }, [selectedCity])
@@ -190,56 +181,8 @@ export default function SelectionTab() {
                   </motion.div>
                 ))}
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <Card className="bg-gray-900/70 border-gray-800/30 backdrop-blur-sm shadow-lg overflow-hidden">
-                  <CardHeader>
-                    <CardTitle className="text-xl text-white">Recent Alerts</CardTitle>
-                    <CardDescription className="text-gray-400">
-                      Latest updates from the blood donation network
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                    {dataAlert.map((data:any) => (
-                        <motion.div
-                          key={data.id}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: 0.5 + data.id * 0.1 }}
-                          className={`flex items-start gap-3 p-3 rounded-lg bg-red-800/30`}
-                        >
-                          <div className={`p-2 rounded-full bg-gray-700/50`}>
-                            <AlertCircle
-                              className="h-4 w-4 text-gray-400"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm text-gray-200">{data.content}</p>
-                            <p className="text-xs text-gray-400 mt-1">{data.date.split("T")[0]}</p>
-                          </div>
-                            <Badge
-                              variant="secondary"
-                              className="bg-red-500/20 text-red-300 hover:bg-red-500/30 border border-red-500/30"
-                            >
-                              {data.bloodgroup}
-                            </Badge>
-                            <Badge
-                              variant="secondary"
-                              className="bg-red-500/20 text-red-300 hover:bg-red-500/30 border border-red-500/30"
-                            >
-                             units: {data.units}
-                            </Badge>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+              <Alerts/>
+              
             </TabsContent>
 
             <TabsContent value="donors">
@@ -338,7 +281,7 @@ export default function SelectionTab() {
                       </motion.div>
                     ))}
                   </motion.div>
-
+                  <Alerts/>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -360,8 +303,10 @@ export default function SelectionTab() {
                         ))}
                     </div>
                   </motion.div>
+                 
                 </CardContent>
               </Card>
+              
             </TabsContent>
           </motion.div>
         </AnimatePresence>

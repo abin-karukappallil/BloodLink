@@ -15,7 +15,15 @@ import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import DonorForm from "@/components/custom/donor-form"
 import { useRouter } from "next/navigation"
-import ImageUpload from "@/components/custom/upload-image"
+import ImageUpload from "@/components/custom/upload-image";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function Profile() {
   const [editProfile, setEditProfile] = useState(false)
@@ -155,7 +163,7 @@ export default function Profile() {
       fetchDetails();
     }
   }, []);
-  
+
 
   const logout = () => {
     Cookies.remove("token")
@@ -218,12 +226,12 @@ export default function Profile() {
           <Card className="bg-gray-800/60 border-gray-700 backdrop-blur-sm shadow-xl overflow-hidden">
             <div className="h-32 bg-gradient-to-r from-green-900/40 to-emerald-800/40 relative">
               <div className="flex flex-col-reverse gap-[-20px] items-end absolute -bottom-16 left-4 sm:left-8">
-              <div className="absolute bottom-0 right-0 z-[11] justify-end items-end">
-                    <ImageUpload />
-                  </div>
+                <div className="absolute bottom-0 right-0 z-[11] justify-end items-end">
+                  <ImageUpload />
+                </div>
                 <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-gray-800 shadow-lg">
                   <AvatarImage src={avatar || "/default.jpg"} alt={name} />
-                  
+
                   <AvatarFallback className="bg-green-700 text-white text-2xl">
                     {name.split(' ').map(word => word[0]).join('')}
 
@@ -434,9 +442,19 @@ export default function Profile() {
                         </div>
 
                         <div className="pt-4">
-                          <Button className="w-full bg-green-700 hover:bg-green-600 text-white">
-                            Schedule Donation
-                          </Button>
+                          <Dialog>
+                            <DialogTrigger>Schedule Donation</DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Blood Donations you can schedule</DialogTitle>
+                                <DialogDescription>
+                                  Click schedule for schedule the donation.
+                                </DialogDescription>
+                              </DialogHeader>
+
+                            </DialogContent>
+                          </Dialog>
+
                         </div>
                       </div>
                     </div>

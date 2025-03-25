@@ -37,8 +37,21 @@ const schema = async () => {
         intensity TEXT NOT NULL,
         hospitalId INT NOT NULL,
         date date NOT NULL,
+        status BOOLEAN NOT NULL DEFAULT "FALSE"
         CONSTRAINT fk_hospital FOREIGN KEY (hospitalId) REFERENCES HOSPITALS(id)
         )`;
+        await db `
+    
+        CREATE TABLE IF NOT EXISTS SCHEDULED (
+          id SERIAL PRIMARY KEY,
+          alertId TEXT NOT NULL,
+          userId TEXT NOT NULL,
+          hospitalId INT NOT NULL,
+          date date NOT NULL,
+          CONSTRAINT fk_hospital FOREIGN KEY (hospitalId) REFERENCES HOSPITALS(id),
+          CONSTRAINT fk_alert FOREIGN KEY (alertId) REFERENCES ALERTS(id),
+          CONSTRAINT fk_user FOREIGN KEY (userId) REFERENCES DONORS(id)
+          )`;
     console.log("Table created successfully.");
   } catch (error) {
     console.error("Error creating table:", error);
