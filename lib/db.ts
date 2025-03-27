@@ -30,18 +30,16 @@ const schema = async () => {
       password TEXT NOT NULL
       )`;
       await db `
-    
       CREATE TABLE IF NOT EXISTS ALERTS (
         id SERIAL PRIMARY KEY,
         content TEXT NOT NULL,
         intensity TEXT NOT NULL,
         hospitalId INT NOT NULL,
         date date NOT NULL,
-        status BOOLEAN NOT NULL DEFAULT "FALSE"
+        status BOOLEAN NOT NULL DEFAULT "FALSE",
         CONSTRAINT fk_hospital FOREIGN KEY (hospitalId) REFERENCES HOSPITALS(id)
         )`;
         await db `
-    
         CREATE TABLE IF NOT EXISTS SCHEDULED (
           id SERIAL PRIMARY KEY,
           alertId TEXT NOT NULL,
