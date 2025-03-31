@@ -33,6 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <script src="https://www.google.com/recaptcha/api.js" async defer></script>
       <body 
         className={`
           ${inter.className} 
