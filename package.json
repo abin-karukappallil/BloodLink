@@ -31,7 +31,7 @@
     "lazy": "^1.0.11",
     "lucide-react": "^0.475.0",
     "motion": "^12.4.4",
-    "next": "15.2.3",
+    "next": "15.2.5",
     "next-rate-limit": "^0.0.3",
     "next-themes": "^0.4.6",
     "nodemailer": "^6.10.0",
